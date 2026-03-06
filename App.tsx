@@ -59,8 +59,8 @@ function DrawerNavigator() {
         />
       )}
     >
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
       <Drawer.Screen name="StaffAttendance" component={StaffAttendanceScreen} />
       <Drawer.Screen name="MemberAttendance" component={MemberAttendanceScreen} />
       <Drawer.Screen name="PaymentHistory" component={PaymentHistoryScreen} />
