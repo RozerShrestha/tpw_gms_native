@@ -16,6 +16,8 @@ import { useMemberInfo } from "../context/MemberInfoContext";
 import { fetchBranchInformation } from "../api/member";
 import { BranchInfo } from "../types/api";
 
+const BRANCH_COLORS = ["#FF6B35", "#4361ee", "#E91E8B", "#10b981", "#f59e0b", "#8b5cf6"];
+
 export default function BranchScreen() {
   const navigation = useNavigation();
   const { accessToken } = useAuth();
@@ -83,6 +85,15 @@ export default function BranchScreen() {
         <View style={{ width: 40 }} />
       </View>
 
+      {/* Branch Count */}
+      <View style={styles.countRow}>
+        <View style={[styles.countBadge, { backgroundColor: T.accentLight }]}>
+          <Text style={[styles.countText, { color: T.accent }]}>
+            {branches.length} {branches.length === 1 ? "Location" : "Locations"}
+          </Text>
+        </View>
+      </View>
+
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -96,50 +107,74 @@ export default function BranchScreen() {
       >
         {branches.length === 0 ? (
           <View style={[styles.emptyCard, { backgroundColor: T.card, borderColor: T.border }]}>
+            <Text style={styles.emptyIcon}>🏢</Text>
             <Text style={styles.emptyText}>No branch information available.</Text>
           </View>
         ) : (
-          branches.map((branch, index) => (
-            <View
-              key={index}
-              style={[styles.card, { backgroundColor: T.card, borderColor: T.border }]}
-            >
-              {/* Branch Name */}
-              <View style={styles.cardHeader}>
-                <Text style={styles.branchIcon}>📍</Text>
-                <Text style={[styles.branchName, { color: T.accent }]}>
-                  {capitalize(branch.firstname)}
-                </Text>
-              </View>
-
-              <View style={styles.divider} />
-
-              {/* Phone */}
-              <TouchableOpacity
-                style={styles.infoRow}
-                onPress={() => callPhone(branch.PhoneNumber)}
-                activeOpacity={0.7}
+          branches.map((branch, index) => {
+            const color = BRANCH_COLORS[index % BRANCH_COLORS.length];
+            return (
+              <View
+                key={index}
+                style={[styles.card, { backgroundColor: T.card, borderColor: T.border }]}
               >
-                <Text style={styles.infoIcon}>📞</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.infoLabel}>Contact</Text>
-                  <Text style={[styles.infoValue, { color: T.accent }]}>
-                    {branch.PhoneNumber}
-                  </Text>
+                {/* Accent strip */}
+                <View style={[styles.accentStrip, { backgroundColor: color }]} />
+
+                {/* Branch Header */}
+                <View style={styles.cardContent}>
+                  <View style={styles.cardHeader}>
+                    <View style={[styles.branchBadge, { backgroundColor: color + "20" }]}>
+                      <Text style={styles.branchBadgeText}>
+                        {capitalize(branch.firstname).charAt(0)}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.branchName, { color: "#fff" }]}>
+                        {capitalize(branch.firstname)}
+                      </Text>
+                      <Text style={[styles.branchSub, { color: color }]}>
+                        Branch #{index + 1}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Action Buttons */}
+                  <View style={styles.actionsRow}>
+                    {/* Call Button */}
+                    <TouchableOpacity
+                      style={[styles.actionBtn, { backgroundColor: "#27ae60" + "18", borderColor: "#27ae60" + "44" }]}
+                      onPress={() => callPhone(branch.PhoneNumber)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.actionBtnIcon}>📞</Text>
+                      <View>
+                        <Text style={styles.actionBtnLabel}>Call Now</Text>
+                        <Text style={[styles.actionBtnValue, { color: "#27ae60" }]}>
+                          {branch.PhoneNumber}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    {/* Map Button */}
+                    <TouchableOpacity
+                      style={[styles.actionBtn, { backgroundColor: color + "18", borderColor: color + "44" }]}
+                      onPress={() => openMap(branch.latitude, branch.longitude, branch.firstname)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.actionBtnIcon}>🗺️</Text>
+                      <View>
+                        <Text style={styles.actionBtnLabel}>Directions</Text>
+                        <Text style={[styles.actionBtnValue, { color }]}>
+                          View on Map
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <Text style={styles.actionIcon}>→</Text>
-              </TouchableOpacity>
-
-              {/* Map */}
-              <TouchableOpacity
-                style={[styles.mapBtn, { backgroundColor: T.accent }]}
-                onPress={() => openMap(branch.latitude, branch.longitude, branch.firstname)}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.mapBtnText}>🗺️  View on Map</Text>
-              </TouchableOpacity>
-            </View>
-          ))
+              </View>
+            );
+          })
         )}
 
         <View style={{ height: 32 }} />
@@ -181,15 +216,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
   },
+  countRow: {
+    paddingHorizontal: 16,
+    marginBottom: 12,
+  },
+  countBadge: {
+    alignSelf: "flex-start",
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  countText: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
   scrollContent: {
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
   emptyCard: {
     borderRadius: 16,
-    padding: 24,
+    padding: 32,
     borderWidth: 1,
     alignItems: "center",
+  },
+  emptyIcon: {
+    fontSize: 40,
+    marginBottom: 12,
   },
   emptyText: {
     color: "#aaa",
@@ -197,58 +251,70 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 16,
-    padding: 18,
     marginBottom: 14,
     borderWidth: 1,
+    overflow: "hidden",
+  },
+  accentStrip: {
+    height: 4,
+  },
+  cardContent: {
+    padding: 16,
   },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 12,
+    marginBottom: 16,
   },
-  branchIcon: {
+  branchBadge: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  branchBadgeText: {
     fontSize: 20,
+    fontWeight: "800",
+    color: "#fff",
   },
   branchName: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700",
   },
-  divider: {
-    height: 1,
-    backgroundColor: "#2a2a4a",
-    marginVertical: 12,
-  },
-  infoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginBottom: 14,
-  },
-  infoIcon: {
-    fontSize: 18,
-  },
-  infoLabel: {
-    fontSize: 11,
-    color: "#888",
-    fontWeight: "500",
-  },
-  infoValue: {
-    fontSize: 15,
+  branchSub: {
+    fontSize: 12,
     fontWeight: "600",
     marginTop: 2,
   },
-  actionIcon: {
-    fontSize: 16,
-    color: "#888",
+  actionsRow: {
+    flexDirection: "row",
+    gap: 10,
   },
-  mapBtn: {
-    borderRadius: 10,
-    paddingVertical: 12,
+  actionBtn: {
+    flex: 1,
+    flexDirection: "row",
     alignItems: "center",
+    gap: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    borderWidth: 1,
   },
-  mapBtnText: {
-    color: "#fff",
-    fontSize: 14,
+  actionBtnIcon: {
+    fontSize: 20,
+  },
+  actionBtnLabel: {
+    fontSize: 10,
+    color: "#888",
+    fontWeight: "500",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  actionBtnValue: {
+    fontSize: 13,
     fontWeight: "700",
+    marginTop: 2,
   },
 });
