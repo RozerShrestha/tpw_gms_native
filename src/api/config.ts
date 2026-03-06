@@ -14,4 +14,5 @@ export const ENDPOINTS = {
   UPDATE_BODY_MEASUREMENT: "/api/UpdateBodyMeasurement",
   DELETE_BODY_MEASUREMENT: "/api/DeleteBodyMeasurement",
   GET_QR_FOR_STAFF: "/api/GetQRForStaff",
+  GET_BRANCH_INFORMATION: "/api/GetBranchInformation",
 } as const;

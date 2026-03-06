@@ -160,3 +160,11 @@ export interface BodyMeasurement {
   thigh: string;
   calf: string;
 }
+
+/** Branch information */
+export interface BranchInfo {
+  firstname: string;
+  latitude: string;
+  longitude: string;
+  PhoneNumber: string;
+}

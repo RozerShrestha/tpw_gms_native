@@ -184,6 +184,14 @@ export default function CustomDrawerContent(
     });
   }
 
+  // Branch is available to all roles
+  primaryItems.push({
+    key: "branch",
+    label: "Our Branches",
+    icon: "\u{1F3E2}",
+    screen: "Branch",
+  });
+
 
 
   const handleNavigate = (screen: string) => {

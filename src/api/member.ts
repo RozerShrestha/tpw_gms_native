@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 import { API_BASE_URL, ENDPOINTS } from "./config";
-import { MemberLoginInfo, HourlyAttendance, FeeStructureItem, TopCheckinItem, BodyMeasurement } from "../types/api";
+import { MemberLoginInfo, HourlyAttendance, FeeStructureItem, TopCheckinItem, BodyMeasurement, BranchInfo } from "../types/api";
 
 /**
  * Fetch member login info using Bearer token and x-www-form-urlencoded body.
@@ -373,4 +373,26 @@ export async function fetchQRForStaff(
   const json = await response.json();
   // Response: { status: 200, message: "...", data: "r/..." }
   return json.data ?? json;
+}
+
+/**
+ * Fetch branch information (locations, phone numbers).
+ */
+export async function fetchBranchInformation(
+  accessToken: string
+): Promise<BranchInfo[]> {
+  const response = await fetch(`${API_BASE_URL}${ENDPOINTS.GET_BRANCH_INFORMATION}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(text || `Failed to fetch branch information (status ${response.status})`);
+  }
+
+  const json = await response.json();
+  return json.data ?? [];
 }
