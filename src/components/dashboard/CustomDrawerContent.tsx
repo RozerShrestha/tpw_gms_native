@@ -129,6 +129,7 @@ export default function CustomDrawerContent(
 
   // ─── Build menu items based on role ────────────────────────
   const primaryItems: DrawerItem[] = [
+    { key: "profile", label: "Profile", icon: "\u{1F464}", screen: "Profile" },
     { key: "dashboard", label: "Dashboard", icon: "\u{1F3E0}", screen: "Dashboard" },
   ];
 
@@ -182,6 +183,8 @@ export default function CustomDrawerContent(
       screen: "BodyMeasurement",
     });
   }
+
+
 
   const handleNavigate = (screen: string) => {
     props.navigation.navigate(screen);

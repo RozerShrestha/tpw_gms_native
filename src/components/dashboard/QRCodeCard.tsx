@@ -1,14 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { DashboardTheme } from "./theme";
 
 interface QRCodeCardProps {
   memberId: string;
   theme: DashboardTheme;
+  isEmployee?: boolean;
+  refreshingQR?: boolean;
+  onRefreshQR?: () => void;
 }
 
-export default function QRCodeCard({ memberId, theme: T }: QRCodeCardProps) {
+export default function QRCodeCard({ memberId, theme: T, isEmployee, refreshingQR, onRefreshQR }: QRCodeCardProps) {
   return (
     <View
       style={[
@@ -24,9 +27,24 @@ export default function QRCodeCard({ memberId, theme: T }: QRCodeCardProps) {
           color={T.bg}
         />
       </View>
-      <Text style={[styles.qrHint, { color: T.accent }]}>
-        Always ask gym admin to scan your QR.
-      </Text>
+      {isEmployee && onRefreshQR ? (
+        <TouchableOpacity
+          style={[styles.refreshBtn, { backgroundColor: T.accent }]}
+          onPress={onRefreshQR}
+          disabled={refreshingQR}
+          activeOpacity={0.7}
+        >
+          {refreshingQR ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.refreshBtnText}>Refresh QR</Text>
+          )}
+        </TouchableOpacity>
+      ) : (
+        <Text style={[styles.qrHint, { color: T.accent }]}>
+          Always ask gym admin to scan your QR.
+        </Text>
+      )}
     </View>
   );
 }
@@ -51,5 +69,18 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     textAlign: "center",
     lineHeight: 18,
+  },
+  refreshBtn: {
+    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 10,
+    minWidth: 120,
+    alignItems: "center",
+  },
+  refreshBtnText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "700",
   },
 });

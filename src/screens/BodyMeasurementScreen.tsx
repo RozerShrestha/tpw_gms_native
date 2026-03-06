@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useMemberInfo } from "../context/MemberInfoContext";
-import { insertBodyMeasurement, updateBodyMeasurement, fetchMemberLoginInfo } from "../api/member";
+import { insertBodyMeasurement, updateBodyMeasurement, deleteBodyMeasurement, fetchMemberLoginInfo } from "../api/member";
 import { BodyMeasurement } from "../types/api";
 import { useNavigation } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
@@ -158,6 +158,58 @@ export default function BodyMeasurementScreen() {
     }
   };
 
+  const handleDelete = (m: BodyMeasurement) => {
+    console.log("[BodyMeasurement] Delete pressed, measurementId:", m.measurementId);
+    if (m.measurementId == null) {
+      console.log("[BodyMeasurement] No measurementId, skipping delete");
+      return;
+    }
+
+    if (Platform.OS === "web") {
+      const confirmed = window.confirm(
+        `Are you sure you want to delete the measurement from ${m.measurementDate}?`
+      );
+      if (confirmed) {
+        performDelete(m.measurementId!);
+      }
+    } else {
+      Alert.alert(
+        "Delete Measurement",
+        `Are you sure you want to delete the measurement from ${m.measurementDate}?`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: () => performDelete(m.measurementId!),
+          },
+        ]
+      );
+    }
+  };
+
+  const performDelete = async (measurementId: number) => {
+    if (!accessToken) return;
+    setLoading(true);
+    try {
+      console.log("[BodyMeasurement] Calling deleteBodyMeasurement API, id:", measurementId);
+      const message = await deleteBodyMeasurement(accessToken, measurementId);
+      console.log("[BodyMeasurement] Delete success:", message);
+      if (memberInfo) {
+        const updatedList = (memberInfo.bodyMeasurements ?? []).filter(
+          (item) => item.measurementId !== measurementId
+        );
+        setMemberInfo({ ...memberInfo, bodyMeasurements: updatedList });
+      }
+      Alert.alert("Success", message);
+    } catch (err: any) {
+      console.log("[BodyMeasurement] Delete failed:", err?.message);
+      Alert.alert("Error", err?.message || "Failed to delete measurement.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formFields = [
     { label: "Weight", value: weight, setter: setWeight, placeholder: "e.g. 80", icon: "⚖️", suffix: "kg" },
     { label: "Height", value: height, setter: setHeight, placeholder: "e.g. 5 feet 10 inch", icon: "📏", suffix: "" },
@@ -236,6 +288,13 @@ export default function BodyMeasurementScreen() {
                   activeOpacity={0.7}
                 >
                   <Text style={[styles.editBtnText, { color: T.accent }]}>✏️ Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.editBtn, { borderColor: "#e74c3c" }]}
+                  onPress={() => handleDelete(m)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.editBtnText, { color: "#e74c3c" }]}>🗑️ Delete</Text>
                 </TouchableOpacity>
               </View>
 

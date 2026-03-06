@@ -133,6 +133,8 @@ export interface MemberLoginInfo {
   gender: string;
   memberSubCatagory: string;
   imageLoc: string;
+  EmergencyContactPerson: string | null;
+  EmergencyContactPersonNumber: string | null;
   memberPaymentHistorys: MemberPaymentHistory[] | null;
   memberAttendances: MemberAttendance[] | null;
   staffAttendance: StaffAttendance[] | null;

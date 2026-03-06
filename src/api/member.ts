@@ -309,6 +309,45 @@ export async function updateBodyMeasurement(
 }
 
 /**
+ * Delete a body measurement by its ID.
+ */
+export async function deleteBodyMeasurement(
+  accessToken: string,
+  measurementId: number
+): Promise<string> {
+  const url = `${API_BASE_URL}${ENDPOINTS.DELETE_BODY_MEASUREMENT}?id=${encodeURIComponent(measurementId)}`;
+  console.log("[deleteBodyMeasurement] URL:", url, "id:", measurementId);
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  const text = await response.text();
+
+  if (!response.ok) {
+    try {
+      const errorData = JSON.parse(text);
+      throw new Error(errorData.Message || errorData.message || text);
+    } catch (e: any) {
+      if (e instanceof SyntaxError) {
+        throw new Error(text || `Failed to delete body measurement (status ${response.status})`);
+      }
+      throw e;
+    }
+  }
+
+  try {
+    const parsed = JSON.parse(text);
+    return parsed.message || parsed.Message || "Body measurement deleted successfully.";
+  } catch {
+    return text || "Body measurement deleted successfully.";
+  }
+}
+
+/**
  * Fetch extended QR code data for staff/employee.
  * Sends the encrypted memberId as raw JSON body.
  * Returns the QR string from response.data.

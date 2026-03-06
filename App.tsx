@@ -15,6 +15,7 @@ import MemberAttendanceScreen from "./src/screens/MemberAttendanceScreen";
 import PaymentHistoryScreen from "./src/screens/PaymentHistoryScreen";
 import FeeStructureScreen from "./src/screens/FeeStructureScreen";
 import BodyMeasurementScreen from "./src/screens/BodyMeasurementScreen";
+import ProfileScreen from "./src/screens/ProfileScreen";
 import CustomDrawerContent from "./src/components/dashboard/CustomDrawerContent";
 
 type AuthStackParamList = {
@@ -28,6 +29,7 @@ type DrawerParamList = {
   PaymentHistory: undefined;
   FeeStructure: undefined;
   BodyMeasurement: undefined;
+  Profile: undefined;
 };
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
@@ -57,6 +59,7 @@ function DrawerNavigator() {
         />
       )}
     >
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
       <Drawer.Screen name="StaffAttendance" component={StaffAttendanceScreen} />
       <Drawer.Screen name="MemberAttendance" component={MemberAttendanceScreen} />

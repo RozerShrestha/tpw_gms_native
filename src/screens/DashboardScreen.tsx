@@ -26,7 +26,6 @@ import {
   QRCodeCard,
   PromoBanner,
   QuickStats,
-  ProfileDetails,
   MembershipDates,
   LockerInfoCard,
   HourlyAttendanceChart,
@@ -88,6 +87,7 @@ export default function DashboardScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [staffQR, setStaffQR] = useState<string | null>(null);
+  const [refreshingQR, setRefreshingQR] = useState(false);
 
   const isEmployee = role === "employee";
   const isClient = role === "client";
@@ -321,7 +321,23 @@ export default function DashboardScreen() {
         )}
 
         {/* QR Code Card */}
-        {isEmployee && staffQR && <QRCodeCard memberId={staffQR} theme={T} />}
+        {isEmployee && staffQR && (
+          <QRCodeCard
+            memberId={staffQR}
+            theme={T}
+            isEmployee
+            refreshingQR={refreshingQR}
+            onRefreshQR={async () => {
+              if (!accessToken || !memberId) return;
+              setRefreshingQR(true);
+              try {
+                const qr = await fetchQRForStaff(accessToken, memberId);
+                setStaffQR(qr);
+              } catch { /* ignore */ }
+              setRefreshingQR(false);
+            }}
+          />
+        )}
         {!isEmployee && memberId && <QRCodeCard memberId={memberId} theme={T} />}
 
         {/* Promo banner */}
@@ -356,8 +372,6 @@ export default function DashboardScreen() {
         )}
 
         
-        {/* Profile Details */}
-        {memberInfo && <ProfileDetails memberInfo={memberInfo} theme={T} />}
 
         {/* Membership Dates (hide for employees) */}
         {!isEmployee && (

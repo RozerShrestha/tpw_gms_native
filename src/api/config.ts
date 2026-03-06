@@ -12,5 +12,6 @@ export const ENDPOINTS = {
   RESET_PASSWORD: "/api/ResetPassword",
   INSERT_BODY_MEASUREMENT: "/api/InsertBodyMeasurement",
   UPDATE_BODY_MEASUREMENT: "/api/UpdateBodyMeasurement",
+  DELETE_BODY_MEASUREMENT: "/api/DeleteBodyMeasurement",
   GET_QR_FOR_STAFF: "/api/GetQRForStaff",
 } as const;

@@ -16,8 +16,8 @@ import { TopCheckinItem } from "../../types/api";
 import { API_BASE_URL } from "../../api/config";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_WIDTH = SCREEN_WIDTH * 0.3;
-const CARD_MARGIN = 6;
+const CARD_WIDTH = SCREEN_WIDTH * 0.24;
+const CARD_MARGIN = 4;
 
 interface TopCheckinsCardProps {
   accessToken: string;
@@ -100,7 +100,7 @@ export default function TopCheckinsCard({
     const badge = RANK_BADGES[rank];
     const isTop3 = rank <= 3;
     const realImage = hasRealImage(item.imageLoc);
-    const avatarSize = isTop3 ? 56 : 48;
+    const avatarSize = isTop3 ? 42 : 36;
     const borderColor = badge?.color ?? T.accent;
 
     return (
@@ -275,15 +275,15 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   slideCard: {
-    borderRadius: 12,
+    borderRadius: 10,
     borderWidth: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
     alignItems: "center",
   },
   rankEmoji: {
-    fontSize: 18,
-    marginBottom: 4,
+    fontSize: 14,
+    marginBottom: 2,
   },
   rankBubble: {
     borderWidth: 1,
@@ -293,22 +293,22 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   rankNumber: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "700",
   },
   avatarWrapper: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 10,
+    marginBottom: 6,
   },
   slideName: {
-    fontSize: 11,
+    fontSize: 10,
     color: "#fff",
     fontWeight: "700",
     textAlign: "center",
     textTransform: "capitalize",
-    marginBottom: 4,
-    lineHeight: 14,
+    marginBottom: 3,
+    lineHeight: 12,
   },
   countPill: {
     borderRadius: 10,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   countValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "900",
   },
   countLabel: {
