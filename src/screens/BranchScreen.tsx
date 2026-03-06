@@ -16,8 +16,6 @@ import { useMemberInfo } from "../context/MemberInfoContext";
 import { fetchBranchInformation } from "../api/member";
 import { BranchInfo } from "../types/api";
 
-const BRANCH_COLORS = ["#FF6B35", "#4361ee", "#E91E8B", "#10b981", "#f59e0b", "#8b5cf6"];
-
 export default function BranchScreen() {
   const navigation = useNavigation();
   const { accessToken } = useAuth();
@@ -111,20 +109,18 @@ export default function BranchScreen() {
             <Text style={styles.emptyText}>No branch information available.</Text>
           </View>
         ) : (
-          branches.map((branch, index) => {
-            const color = BRANCH_COLORS[index % BRANCH_COLORS.length];
-            return (
+          branches.map((branch, index) => (
               <View
                 key={index}
                 style={[styles.card, { backgroundColor: T.card, borderColor: T.border }]}
               >
                 {/* Accent strip */}
-                <View style={[styles.accentStrip, { backgroundColor: color }]} />
+                <View style={[styles.accentStrip, { backgroundColor: T.accent }]} />
 
                 {/* Branch Header */}
                 <View style={styles.cardContent}>
                   <View style={styles.cardHeader}>
-                    <View style={[styles.branchBadge, { backgroundColor: color + "20" }]}>
+                    <View style={[styles.branchBadge, { backgroundColor: T.accent + "20" }]}>
                       <Text style={styles.branchBadgeText}>
                         {capitalize(branch.firstname).charAt(0)}
                       </Text>
@@ -133,7 +129,7 @@ export default function BranchScreen() {
                       <Text style={[styles.branchName, { color: "#fff" }]}>
                         {capitalize(branch.firstname)}
                       </Text>
-                      <Text style={[styles.branchSub, { color: color }]}>
+                      <Text style={[styles.branchSub, { color: T.accent }]}>
                         Branch #{index + 1}
                       </Text>
                     </View>
@@ -158,14 +154,14 @@ export default function BranchScreen() {
 
                     {/* Map Button */}
                     <TouchableOpacity
-                      style={[styles.actionBtn, { backgroundColor: color + "18", borderColor: color + "44" }]}
+                      style={[styles.actionBtn, { backgroundColor: T.accent + "18", borderColor: T.accent + "44" }]}
                       onPress={() => openMap(branch.latitude, branch.longitude, branch.firstname)}
                       activeOpacity={0.7}
                     >
                       <Text style={styles.actionBtnIcon}>🗺️</Text>
                       <View>
                         <Text style={styles.actionBtnLabel}>Directions</Text>
-                        <Text style={[styles.actionBtnValue, { color }]}>
+                        <Text style={[styles.actionBtnValue, { color: T.accent }]}>
                           View on Map
                         </Text>
                       </View>
@@ -173,8 +169,7 @@ export default function BranchScreen() {
                   </View>
                 </View>
               </View>
-            );
-          })
+          ))
         )}
 
         <View style={{ height: 32 }} />

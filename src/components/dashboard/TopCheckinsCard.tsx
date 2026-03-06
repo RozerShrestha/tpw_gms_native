@@ -16,7 +16,7 @@ import { TopCheckinItem } from "../../types/api";
 import { API_BASE_URL } from "../../api/config";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_WIDTH = SCREEN_WIDTH * 0.24;
+const CARD_WIDTH = SCREEN_WIDTH * 0.25;
 const CARD_MARGIN = 4;
 
 interface TopCheckinsCardProps {

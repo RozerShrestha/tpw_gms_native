@@ -12,6 +12,13 @@ interface HeaderBarProps {
   onMenuPress?: () => void;
 }
 
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good Morning,";
+  if (hour < 17) return "Good Afternoon,";
+  return "Good Evening,";
+}
+
 export default function HeaderBar({
   fullname,
   isEmployee,
@@ -32,7 +39,7 @@ export default function HeaderBar({
         </TouchableOpacity>
       )}
       <View style={{ flex: 1 }}>
-        <Text style={styles.greeting}>Welcome back,</Text>
+        <Text style={styles.greeting}>{getGreeting()}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text style={styles.headerName}>{fullname}</Text>
           {isClient && memberStatus && (
