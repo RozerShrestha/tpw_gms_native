@@ -341,7 +341,7 @@ export default function DashboardScreen() {
         {!isEmployee && memberId && <QRCodeCard memberId={memberId} theme={T} />}
 
         {/* Promo banner */}
-        {isClient && <PromoBanner theme={T} />}
+        {/* {isClient && <PromoBanner theme={T} />} */}
 
         {/* Quick Stats */}
         <QuickStats
@@ -359,7 +359,7 @@ export default function DashboardScreen() {
 
         {/* Top 10 Check-ins Leaderboard */}
         {accessToken && (
-          <TopCheckinsCard accessToken={accessToken} theme={T} />
+          <TopCheckinsCard accessToken={accessToken} branch={memberInfo?.branch ?? ""} theme={T} />
         )}
 
         {/* Hourly Gym Traffic Chart */}

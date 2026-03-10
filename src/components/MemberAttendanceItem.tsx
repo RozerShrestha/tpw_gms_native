@@ -35,9 +35,9 @@ export function MemberAttendanceTableHeader({
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <View style={[styles.headerRow, { borderBottomColor: accentColor }]}>
         <Text style={[styles.headerCell, styles.colNo]}>#</Text>
-        <Text style={[styles.headerCell, styles.colId]}>
+        {/* <Text style={[styles.headerCell, styles.colId]}>
           {isGuest ? "Email" : "Member ID"}
-        </Text>
+        </Text> */}
         <Text style={[styles.headerCell, styles.colName]}>Name</Text>
         <Text style={[styles.headerCell, styles.colDate]}>Check-in</Text>
         <Text style={[styles.headerCell, styles.colBranch]}>Check-in Branch</Text>
@@ -65,11 +65,11 @@ export function MemberAttendanceTable({
             style={[styles.headerRow, { borderBottomColor: accentColor }]}
           >
             <Text style={[styles.headerCell, styles.colNo]}>#</Text>
-            {!isGuest &&
+            {/* {!isGuest &&
             <Text style={[styles.headerCell, styles.colId]}>
               MemberId 
             </Text>
-            }
+            } */}
             <Text style={[styles.headerCell, styles.colName]}>Name</Text>
             <Text style={[styles.headerCell, styles.colDate]}>Check-in</Text>
             <Text style={[styles.headerCell, styles.colBranch]}>Check-in Branch</Text>
@@ -98,11 +98,11 @@ export default function MemberAttendanceItem({
       <Text style={[styles.cell, styles.colNo, { color: accentColor }]}>
         {index + 1}
       </Text>
-      {!isGuest && (
+      {/* {!isGuest && (
         <Text style={[styles.cell, styles.colId]} numberOfLines={1}>
           {idValue}
         </Text>
-      )}
+      )} */}
       <Text
         style={[styles.cell, styles.colName, { textTransform: "capitalize" }]}
         numberOfLines={1}

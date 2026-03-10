@@ -100,9 +100,10 @@ export async function fetchFeeStructure(
  * Fetch top 10 checkins leaderboard.
  */
 export async function fetchTopTenCheckins(
-  accessToken: string
+  accessToken: string,
+  branchName: string
 ): Promise<TopCheckinItem[]> {
-  const url = `${API_BASE_URL}${ENDPOINTS.TOP_TEN_CHECKINS}`;
+  const url = `${API_BASE_URL}${ENDPOINTS.TOP_TEN_CHECKINS}?branchName=${encodeURIComponent(branchName)}`;
 
   const response = await fetch(url, {
     method: "GET",

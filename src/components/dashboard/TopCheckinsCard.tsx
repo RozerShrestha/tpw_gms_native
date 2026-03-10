@@ -16,11 +16,12 @@ import { TopCheckinItem } from "../../types/api";
 import { API_BASE_URL } from "../../api/config";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_WIDTH = SCREEN_WIDTH * 0.25;
+const CARD_WIDTH = SCREEN_WIDTH * 0.375;
 const CARD_MARGIN = 4;
 
 interface TopCheckinsCardProps {
   accessToken: string;
+  branch: string;
   theme: DashboardTheme;
 }
 
@@ -52,6 +53,7 @@ function getInitials(name: string): string {
 
 export default function TopCheckinsCard({
   accessToken,
+  branch,
   theme: T,
 }: TopCheckinsCardProps) {
   const [data, setData] = useState<TopCheckinItem[]>([]);
@@ -63,14 +65,14 @@ export default function TopCheckinsCard({
     try {
       setLoading(true);
       setError(false);
-      const result = await fetchTopTenCheckins(accessToken);
+      const result = await fetchTopTenCheckins(accessToken, branch);
       setData(result);
     } catch {
       setError(true);
     } finally {
       setLoading(false);
     }
-  }, [accessToken]);
+  }, [accessToken, branch]);
 
   useEffect(() => {
     load();
@@ -94,6 +96,9 @@ export default function TopCheckinsCard({
   if (error || data.length === 0) {
     return null;
   }
+
+  const capitalize = (s: string) =>
+    s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 
   const renderItem = ({ item, index }: { item: TopCheckinItem; index: number }) => {
     const rank = index + 1;
@@ -204,7 +209,9 @@ export default function TopCheckinsCard({
       {/* Header */}
       <View style={styles.headerRow}>
         <Text style={styles.sectionTitle}>🏆 Top Check-ins</Text>
-        <Text style={[styles.subtitle, { color: T.accent }]}>This Year</Text>
+        <Text style={[styles.subtitle, { color: T.accent }]}>
+          {branch ? capitalize(branch) : "This Year"}
+        </Text>
       </View>
 
       {/* Horizontal carousel */}
