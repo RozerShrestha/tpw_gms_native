@@ -11,9 +11,22 @@ import {
   Platform,
   ScrollView,
   Modal,
+  Image,
+  Dimensions,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { resetPassword } from "../api/auth";
+
+const { width: SCREEN_W } = Dimensions.get("window");
+const LOGO_W = Math.min(SCREEN_W * 0.55, 240);
+
+const ACCENT = "#C62828";
+const ACCENT_DARK = "#8E0000";
+const BG = "#0B0B0F";
+const CARD_BG = "#141418";
+const INPUT_BG = "#1C1C22";
+const BORDER_CLR = "#2A2A30";
+const BORDER_FOCUS = "#C62828";
 
 /** Cross-platform alert (Alert.alert is unsupported on web) */
 function showAlert(title: string, message: string) {
@@ -29,6 +42,8 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usernameFocused, setUsernameFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
   // Reset password state
   const [resetModalVisible, setResetModalVisible] = useState(false);
@@ -94,56 +109,85 @@ export default function LoginScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        {/* Top decorative area */}
-        <View style={styles.topSection}>
-          <Text style={styles.icon}>&#x1F3CB;</Text>
-          <Text style={styles.title}>TPW GMS</Text>
-          <Text style={styles.subtitle}>Gym Management System</Text>
-        </View>
-
-        {/* Login card */}
-        <View style={styles.card}>
-          <Text style={styles.cardHeading}>Welcome Back</Text>
-          <Text style={styles.cardSubheading}>Sign in to your account</Text>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Username</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your username"
-              placeholderTextColor="#8a8a8a"
-              value={username}
-              onChangeText={setUsername}
-              autoCapitalize="none"
-              autoCorrect={false}
-              editable={!loading}
+        {/* ── Logo & Branding ── */}
+        <View style={styles.logoSection}>
+          <View style={styles.logoGlow}>
+            <Image
+              source={require("../../assets/tpw-logo.png")}
+              style={styles.logo}
+              resizeMode="contain"
             />
           </View>
+        </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your password"
-              placeholderTextColor="#8a8a8a"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              editable={!loading}
-            />
+        {/* ── Divider accent line ── */}
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>SIGN IN</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* ── Login Card ── */}
+        <View style={styles.card}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>USERNAME</Text>
+            <View
+              style={[
+                styles.inputWrapper,
+                usernameFocused && styles.inputWrapperFocused,
+              ]}
+            >
+              <Text style={styles.inputIcon}>👤</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your username"
+                placeholderTextColor="#555"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!loading}
+                onFocus={() => setUsernameFocused(true)}
+                onBlur={() => setUsernameFocused(false)}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>PASSWORD</Text>
+            <View
+              style={[
+                styles.inputWrapper,
+                passwordFocused && styles.inputWrapperFocused,
+              ]}
+            >
+              <Text style={styles.inputIcon}>🔒</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your password"
+                placeholderTextColor="#555"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                editable={!loading}
+                onFocus={() => setPasswordFocused(true)}
+                onBlur={() => setPasswordFocused(false)}
+              />
+            </View>
           </View>
 
           <TouchableOpacity
-            style={[styles.button, loading && styles.buttonDisabled]}
+            style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
             onPress={handleLogin}
             disabled={loading}
-            activeOpacity={0.85}
+            activeOpacity={0.8}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.buttonText}>LOGIN</Text>
+              <Text style={styles.loginBtnText}>LOG IN</Text>
             )}
           </TouchableOpacity>
 
@@ -153,91 +197,108 @@ export default function LoginScreen() {
               setResetModalVisible(true);
             }}
             activeOpacity={0.7}
-            style={styles.resetLink}
+            style={styles.forgotLink}
           >
-            <Text style={styles.resetLinkText}>Reset Password</Text>
+            <Text style={styles.forgotLinkText}>Reset Password?</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Reset Password Modal */}
+        {/* ── Reset Password Modal ── */}
         <Modal
           visible={resetModalVisible}
           transparent
-          animationType="slide"
+          animationType="fade"
           onRequestClose={() => setResetModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalCard}>
-              <Text style={styles.cardHeading}>Reset Password</Text>
-              <Text style={styles.cardSubheading}>Enter your credentials and new password</Text>
-
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>Username</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your username"
-                  placeholderTextColor="#8a8a8a"
-                  value={resetUsername}
-                  onChangeText={setResetUsername}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  editable={!resetLoading}
-                />
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Reset Password</Text>
+                <Text style={styles.modalSubtitle}>
+                  Enter your credentials and new password
+                </Text>
               </View>
 
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>Current Password</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter current password"
-                  placeholderTextColor="#8a8a8a"
-                  value={resetCurrentPassword}
-                  onChangeText={setResetCurrentPassword}
-                  secureTextEntry
-                  editable={!resetLoading}
-                />
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>USERNAME</Text>
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputIcon}>👤</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your username"
+                    placeholderTextColor="#555"
+                    value={resetUsername}
+                    onChangeText={setResetUsername}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    editable={!resetLoading}
+                  />
+                </View>
               </View>
 
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>New Password</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter new password"
-                  placeholderTextColor="#8a8a8a"
-                  value={resetNewPassword}
-                  onChangeText={setResetNewPassword}
-                  secureTextEntry
-                  editable={!resetLoading}
-                />
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>CURRENT PASSWORD</Text>
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputIcon}>🔒</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter current password"
+                    placeholderTextColor="#555"
+                    value={resetCurrentPassword}
+                    onChangeText={setResetCurrentPassword}
+                    secureTextEntry
+                    editable={!resetLoading}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>NEW PASSWORD</Text>
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputIcon}>🔑</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter new password"
+                    placeholderTextColor="#555"
+                    value={resetNewPassword}
+                    onChangeText={setResetNewPassword}
+                    secureTextEntry
+                    editable={!resetLoading}
+                  />
+                </View>
               </View>
 
               <TouchableOpacity
-                style={[styles.button, resetLoading && styles.buttonDisabled]}
+                style={[
+                  styles.loginBtn,
+                  resetLoading && styles.loginBtnDisabled,
+                ]}
                 onPress={handleResetPassword}
                 disabled={resetLoading}
-                activeOpacity={0.85}
+                activeOpacity={0.8}
               >
                 {resetLoading ? (
-                  <ActivityIndicator color="#fff" />
+                  <ActivityIndicator color="#fff" size="small" />
                 ) : (
-                  <Text style={styles.buttonText}>RESET PASSWORD</Text>
+                  <Text style={styles.loginBtnText}>RESET PASSWORD</Text>
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => setResetModalVisible(false)}
                 activeOpacity={0.7}
-                style={styles.cancelLink}
+                style={styles.cancelBtn}
                 disabled={resetLoading}
               >
-                <Text style={styles.resetLinkText}>Cancel</Text>
+                <Text style={styles.cancelBtnText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
 
-        <Text style={styles.footerText}>
-          Powered by TPW Gym Management System
+        {/* ── Footer ── */}
+        <Text style={styles.footer}>
+          © The Physique Workshop
         </Text>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -245,139 +306,186 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  /* ── Layout ── */
   container: {
     flex: 1,
-    backgroundColor: "#1a1a2e",
+    backgroundColor: BG,
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: "center",
-    padding: 24,
+    paddingHorizontal: 28,
+    paddingVertical: 40,
   },
-  topSection: {
+
+  /* ── Logo ── */
+  logoSection: {
+    alignItems: "center",
+    marginBottom: 32,
+  },
+  logoGlow: {
+    shadowColor: ACCENT,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.35,
+    shadowRadius: 30,
+    elevation: 12,
+  },
+  logo: {
+    width: LOGO_W,
+    height: LOGO_W * 0.55,
+  },
+  tagline: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#777",
+    letterSpacing: 4,
+    marginTop: 12,
+  },
+
+  /* ── Divider ── */
+  divider: {
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 28,
+    paddingHorizontal: 4,
   },
-  icon: {
-    fontSize: 48,
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: BORDER_CLR,
+  },
+  dividerText: {
+    color: ACCENT,
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 3,
+    marginHorizontal: 16,
+  },
+
+  /* ── Card ── */
+  card: {
+    backgroundColor: CARD_BG,
+    borderRadius: 20,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: BORDER_CLR,
+  },
+
+  /* ── Inputs ── */
+  inputGroup: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#888",
+    letterSpacing: 1.5,
     marginBottom: 8,
   },
-  title: {
-    fontSize: 34,
-    fontWeight: "800",
-    textAlign: "center",
-    color: "#FF6B35",
-    letterSpacing: 2,
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: INPUT_BG,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: BORDER_CLR,
+    paddingHorizontal: 14,
   },
-  subtitle: {
-    fontSize: 13,
-    color: "#aaa",
-    textAlign: "center",
+  inputWrapperFocused: {
+    borderColor: BORDER_FOCUS,
+    backgroundColor: "#1A1014",
+  },
+  inputIcon: {
+    fontSize: 16,
+    marginRight: 10,
+    opacity: 0.6,
+  },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    color: "#fff",
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+  },
+
+  /* ── Login Button ── */
+  loginBtn: {
+    backgroundColor: ACCENT,
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
     marginTop: 4,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-  },
-  card: {
-    backgroundColor: "#16213e",
-    borderRadius: 20,
-    padding: 28,
-    borderWidth: 1,
-    borderColor: "#2a2a4a",
-    shadowColor: "#FF6B35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
+    shadowColor: ACCENT,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
     elevation: 8,
   },
-  cardHeading: {
+  loginBtnDisabled: {
+    opacity: 0.5,
+  },
+  loginBtnText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "900",
+    letterSpacing: 3,
+  },
+
+  /* ── Forgot Link ── */
+  forgotLink: {
+    marginTop: 18,
+    alignItems: "center",
+  },
+  forgotLinkText: {
+    color: "#888",
+    fontSize: 13,
+    fontWeight: "500",
+  },
+
+  /* ── Footer ── */
+  footer: {
+    textAlign: "center",
+    color: "#333",
+    fontSize: 11,
+    marginTop: 32,
+    letterSpacing: 1,
+  },
+
+  /* ── Modal ── */
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.85)",
+    justifyContent: "center",
+    paddingHorizontal: 28,
+  },
+  modalCard: {
+    backgroundColor: CARD_BG,
+    borderRadius: 20,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: BORDER_CLR,
+  },
+  modalHeader: {
+    marginBottom: 24,
+  },
+  modalTitle: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: "800",
     color: "#fff",
     marginBottom: 4,
   },
-  cardSubheading: {
+  modalSubtitle: {
     fontSize: 13,
+    color: "#666",
+  },
+  cancelBtn: {
+    marginTop: 14,
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  cancelBtnText: {
     color: "#888",
-    marginBottom: 24,
-  },
-  inputContainer: {
-    marginBottom: 18,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#ccc",
-    marginBottom: 8,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#2a2a4a",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    color: "#fff",
-    backgroundColor: "#0f1629",
-  },
-  button: {
-    backgroundColor: "#FF6B35",
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: "center",
-    marginTop: 8,
-    shadowColor: "#FF6B35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "800",
-    letterSpacing: 2,
-  },
-  footerText: {
-    textAlign: "center",
-    color: "#555",
-    fontSize: 12,
-    marginTop: 24,
-  },
-  resetLink: {
-    marginTop: 16,
-    alignItems: "center",
-  },
-  resetLinkText: {
-    color: "#FF6B35",
     fontSize: 14,
     fontWeight: "600",
-  },
-  cancelLink: {
-    marginTop: 12,
-    alignItems: "center",
-    paddingVertical: 8,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    justifyContent: "center",
-    padding: 24,
-  },
-  modalCard: {
-    backgroundColor: "#16213e",
-    borderRadius: 20,
-    padding: 28,
-    borderWidth: 1,
-    borderColor: "#2a2a4a",
-    shadowColor: "#FF6B35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 8,
   },
 });
