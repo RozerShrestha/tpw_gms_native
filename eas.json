@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 3.0.0"
+    "version": ">= 3.0.0",
+    "appVersionSource": "local" // means the version in app.json will be used as the source of truth for the app version during builds
   },
   "build": {
     "preview": {
