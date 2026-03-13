@@ -60,7 +60,7 @@ export default function MemberAttendanceScreen() {
         contentContainerStyle={styles.listContent}
       >
         {attendanceRecords.length > 0 ? (
-          <MemberAttendanceTable accentColor={T.accent} isGuest={isGuest}>
+          <MemberAttendanceTable accentColor={T.accent} isGuest={isGuest} theme={T}>
             {attendanceRecords.map((item, index) => (
               <MemberAttendanceItem
                 key={`att-${item.checkin}-${index}`}
@@ -68,6 +68,7 @@ export default function MemberAttendanceScreen() {
                 index={index}
                 accentColor={T.accent}
                 isGuest={isGuest}
+                theme={T}
               />
             ))}
           </MemberAttendanceTable>

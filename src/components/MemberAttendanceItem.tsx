@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { MemberAttendance, GuestAttendance } from "../types/api";
+import { DashboardTheme } from "./dashboard/theme";
 
 type AttendanceRecord = MemberAttendance | GuestAttendance;
 
@@ -9,6 +10,7 @@ interface Props {
   index: number;
   accentColor?: string;
   isGuest?: boolean;
+  theme?: DashboardTheme;
 }
 
 /** Shorten "Mon, 19 January 2026" → "19 Jan 2026" */
@@ -51,28 +53,31 @@ export function MemberAttendanceTable({
   children,
   accentColor = "#C62828",
   isGuest = false,
+  theme,
 }: {
   children: React.ReactNode;
   accentColor?: string;
   isGuest?: boolean;
+  theme?: DashboardTheme;
 }) {
+  const isDark = theme?.isDark ?? true;
   return (
-    <View style={styles.tableOuter}>
+    <View style={[styles.tableOuter, { backgroundColor: theme ? theme.card : "#16213e", borderColor: theme ? theme.border : "#2a2a4a" }]}>
       <ScrollView horizontal showsHorizontalScrollIndicator={true}>
         <View>
           {/* Header */}
           <View
-            style={[styles.headerRow, { borderBottomColor: accentColor }]}
+            style={[styles.headerRow, { borderBottomColor: accentColor, backgroundColor: isDark ? "#0d1b2a" : "rgba(0,0,0,0.04)" }]}
           >
-            <Text style={[styles.headerCell, styles.colNo]}>#</Text>
+            <Text style={[styles.headerCell, styles.colNo, { color: theme ? theme.textSecondary : "#aaa" }]}>#</Text>
             {/* {!isGuest &&
             <Text style={[styles.headerCell, styles.colId]}>
               MemberId 
             </Text>
             } */}
-            <Text style={[styles.headerCell, styles.colName]}>Name</Text>
-            <Text style={[styles.headerCell, styles.colDate]}>Check-in</Text>
-            <Text style={[styles.headerCell, styles.colBranch]}>Check-in Branch</Text>
+            <Text style={[styles.headerCell, styles.colName, { color: theme ? theme.textSecondary : "#aaa" }]}>Name</Text>
+            <Text style={[styles.headerCell, styles.colDate, { color: theme ? theme.textSecondary : "#aaa" }]}>Check-in</Text>
+            <Text style={[styles.headerCell, styles.colBranch, { color: theme ? theme.textSecondary : "#aaa" }]}>Check-in Branch</Text>
           </View>
           {/* Rows */}
           {children}
@@ -87,14 +92,16 @@ export default function MemberAttendanceItem({
   index,
   accentColor = "#C62828",
   isGuest = false,
+  theme,
 }: Props) {
   const isEven = index % 2 === 0;
+  const isDark = theme?.isDark ?? true;
   const idValue = isGuest
     ? (item as GuestAttendance).email
     : (item as MemberAttendance).memberId;
 
   return (
-    <View style={[styles.row, isEven ? styles.rowEven : styles.rowOdd]}>
+    <View style={[styles.row, isEven ? { backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)" } : styles.rowOdd, theme && { borderBottomColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }]}>
       <Text style={[styles.cell, styles.colNo, { color: accentColor }]}>
         {index + 1}
       </Text>
@@ -104,16 +111,16 @@ export default function MemberAttendanceItem({
         </Text>
       )} */}
       <Text
-        style={[styles.cell, styles.colName, { textTransform: "capitalize" }]}
+        style={[styles.cell, styles.colName, { textTransform: "capitalize", color: theme ? theme.text : "#ddd" }]}
         numberOfLines={1}
       >
         {item.fullName}
       </Text>
-      <Text style={[styles.cell, styles.colDate]} numberOfLines={1}>
+      <Text style={[styles.cell, styles.colDate, { color: theme ? theme.text : "#ddd" }]} numberOfLines={1}>
         {shortDate(item.checkin)}
       </Text>
       <Text
-        style={[styles.cell, styles.colBranch, { textTransform: "capitalize" }]}
+        style={[styles.cell, styles.colBranch, { textTransform: "capitalize", color: theme ? theme.text : "#ddd" }]}
         numberOfLines={1}
       >
         {item.checkinBranch || "-"}
@@ -125,10 +132,8 @@ export default function MemberAttendanceItem({
 const styles = StyleSheet.create({
   /* ---- table wrapper ---- */
   tableOuter: {
-    backgroundColor: "#16213e",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#2a2a4a",
     overflow: "hidden",
   },
 
@@ -146,12 +151,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderBottomWidth: 2,
-    backgroundColor: "#0d1b2a",
   },
   headerCell: {
     fontSize: 11,
     fontWeight: "800",
-    color: "#aaa",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
@@ -169,7 +172,6 @@ const styles = StyleSheet.create({
   rowOdd: { backgroundColor: "transparent" },
   cell: {
     fontSize: 13,
-    color: "#ddd",
     fontWeight: "500",
   },
 });

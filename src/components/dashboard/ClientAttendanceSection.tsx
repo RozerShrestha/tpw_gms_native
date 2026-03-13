@@ -41,13 +41,14 @@ export default function ClientAttendanceSection({
         &#x1F4CB;  My Attendance
       </Text>
       {sorted.length > 0 ? (
-        <MemberAttendanceTable accentColor={T.accent}>
+        <MemberAttendanceTable accentColor={T.accent} theme={T}>
           {sorted.map((item, index) => (
             <MemberAttendanceItem
               key={`att-${item.checkin}-${index}`}
               item={item}
               index={index}
               accentColor={T.accent}
+              theme={T}
             />
           ))}
         </MemberAttendanceTable>
