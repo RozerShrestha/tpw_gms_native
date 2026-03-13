@@ -1,7 +1,7 @@
 import React from "react";
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { ActivityIndicator, View, StyleSheet, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -37,6 +37,37 @@ type DrawerParamList = {
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const Drawer = createDrawerNavigator<DrawerParamList>();
+
+// Inject apple-touch-icon for iOS "Add to Home Screen" on web
+if (Platform.OS === "web" && typeof document !== "undefined") {
+  const addLink = (rel: string, href: string, sizes?: string) => {
+    const link = document.createElement("link");
+    link.rel = rel;
+    link.href = href;
+    if (sizes) link.setAttribute("sizes", sizes);
+    document.head.appendChild(link);
+  };
+  if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+    addLink("apple-touch-icon", "/apple-touch-icon.png", "180x180");
+  }
+  if (!document.querySelector('link[rel="manifest"]')) {
+    addLink("manifest", "/manifest.json");
+  }
+  const metaName = "apple-mobile-web-app-capable";
+  if (!document.querySelector(`meta[name="${metaName}"]`)) {
+    const meta = document.createElement("meta");
+    meta.name = metaName;
+    meta.content = "yes";
+    document.head.appendChild(meta);
+  }
+  const metaTitle = "apple-mobile-web-app-title";
+  if (!document.querySelector(`meta[name="${metaTitle}"]`)) {
+    const meta = document.createElement("meta");
+    meta.name = metaTitle;
+    meta.content = "TPW";
+    document.head.appendChild(meta);
+  }
+}
 
 function DrawerNavigator() {
   const { memberId, role } = useAuth();

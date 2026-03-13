@@ -31,7 +31,11 @@
       "usesCleartextTraffic": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "TPW GMS",
+      "shortName": "TPW",
+      "themeColor": "#C62828",
+      "backgroundColor": "#1a1a2e"
     },
     "plugins": [
       "expo-secure-store",
