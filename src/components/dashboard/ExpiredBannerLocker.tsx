@@ -1,18 +1,20 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { DashboardTheme } from "./theme";
 
 interface ExpiredBannerLockerProps {
   remainingDays: number;
+  theme: DashboardTheme;
 }
 
-export default function ExpiredBannerLocker({ remainingDays }: ExpiredBannerLockerProps) {
+export default function ExpiredBannerLocker({ remainingDays, theme: T }: ExpiredBannerLockerProps) {
   const absDays = Math.abs(remainingDays);
   return (
-    <View style={styles.ExpiredBannerLocker}>
+    <View style={[styles.ExpiredBannerLocker, { backgroundColor: T.isDark ? "#2a1015" : "#fef2f2" }]}>
       <Text style={styles.ExpiredBannerLockerIcon}>&#x26D4;</Text>
       <View style={{ flex: 1 }}>
         <Text style={styles.ExpiredBannerLockerTitle}>Locker Expired</Text>
-        <Text style={styles.ExpiredBannerLockerSub}>
+        <Text style={[styles.ExpiredBannerLockerSub, { color: T.textSecondary }]}>
           Your locker expired {absDays} day
           {absDays !== 1 ? "s" : ""} ago. Please renew to continue.
         </Text>
@@ -25,7 +27,6 @@ const styles = StyleSheet.create({
   ExpiredBannerLocker: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#2a1015",
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,
@@ -44,7 +45,6 @@ const styles = StyleSheet.create({
   },
   ExpiredBannerLockerSub: {
     fontSize: 12,
-    color: "#ccc",
     marginTop: 3,
     lineHeight: 17,
   },

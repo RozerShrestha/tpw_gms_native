@@ -24,7 +24,7 @@ export default function QRCodeCard({ memberId, theme: T, isEmployee, refreshingQ
           value={memberId}
           size={160}
           backgroundColor="#fff"
-          color={T.bg}
+          color="#000"
         />
       </View>
       {isEmployee && onRefreshQR ? (

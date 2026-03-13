@@ -32,16 +32,16 @@ export default function HeaderBar({
     <View style={styles.headerBar}>
       {onMenuPress && (
         <TouchableOpacity
-          style={[styles.menuBtn, { borderColor: T.border }]}
+          style={[styles.menuBtn, { borderColor: T.border, backgroundColor: T.overlay }]}
           onPress={onMenuPress}
         >
-          <Text style={styles.menuIcon}>{"\u2630"}</Text>
+          <Text style={[styles.menuIcon, { color: T.text }]}>{"\u2630"}</Text>
         </TouchableOpacity>
       )}
       <View style={{ flex: 1 }}>
-        <Text style={styles.greeting}>{getGreeting()}</Text>
+        <Text style={[styles.greeting, { color: T.textSecondary }]}>{getGreeting()}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Text style={styles.headerName}>{fullname}</Text>
+          <Text style={[styles.headerName, { color: T.text }]}>{fullname}</Text>
           {isClient && memberStatus && (
             <View
               style={[
@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.08)",
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -80,16 +79,13 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     fontSize: 20,
-    color: "#fff",
   },
   greeting: {
     fontSize: 14,
-    color: "#888",
   },
   headerName: {
     fontSize: 24,
     fontWeight: "800",
-    color: "#fff",
     textTransform: "capitalize",
   },
   roleBadge: {

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { useMemberInfo } from "../../context/MemberInfoContext";
 
 interface InfoRowProps {
   label: string;
@@ -12,14 +13,16 @@ export default function InfoRow({
   label,
   value,
   highlight,
-  accent = "#FF6B35",
+  accent = "#C62828",
 }: InfoRowProps) {
+  const { theme: T } = useMemberInfo();
   return (
     <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={[styles.infoLabel, { color: T.textSecondary }]}>{label}</Text>
       <Text
         style={[
           styles.infoValue,
+          { color: T.text },
           highlight && { color: accent, fontWeight: "700" },
         ]}
       >
@@ -37,13 +40,11 @@ const styles = StyleSheet.create({
   infoLabel: {
     width: 110,
     fontSize: 13,
-    color: "#888",
     fontWeight: "500",
   },
   infoValue: {
     flex: 1,
     fontSize: 13,
-    color: "#ddd",
     fontWeight: "500",
   },
 });

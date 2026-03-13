@@ -31,7 +31,9 @@ export default function MembershipDates({
       style={[
         styles.membershipCard,
         {
-          backgroundColor: isClient && isExpired ? "#2a1015" : T.card,
+          backgroundColor: isClient && isExpired ? (T.isDark ? "#2a1015" : "#fef2f2") : T.card,
+          borderColor: isClient && isExpired ? "#ef4444" : T.accent,
+          borderLeftColor: isClient && isExpired ? "#ef4444" : T.accent,
         },
       ]}
     >
@@ -57,7 +59,7 @@ export default function MembershipDates({
           </View>
         ) : null}
       </View>
-      <View style={styles.divider} />
+      <View style={[styles.divider, { backgroundColor: T.border }]} />
       <InfoRow
         label="Membership Date"
         value={memberDate}
@@ -104,7 +106,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: "#2a2a4a",
     marginVertical: 12,
   },
   daysBadge: {

@@ -77,9 +77,9 @@ export default function BranchScreen() {
           style={[styles.menuBtn, { borderColor: T.border }]}
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         >
-          <Text style={styles.menuIcon}>{"\u2630"}</Text>
+          <Text style={[styles.menuIcon, { color: T.text }]}>{"\u2630"}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Our Branches</Text>
+        <Text style={[styles.headerTitle, { color: T.text }]}>Our Branches</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -106,7 +106,7 @@ export default function BranchScreen() {
         {branches.length === 0 ? (
           <View style={[styles.emptyCard, { backgroundColor: T.card, borderColor: T.border }]}>
             <Text style={styles.emptyIcon}>🏢</Text>
-            <Text style={styles.emptyText}>No branch information available.</Text>
+            <Text style={[styles.emptyText, { color: T.textSecondary }]}>No branch information available.</Text>
           </View>
         ) : (
           branches.map((branch, index) => (
@@ -121,16 +121,16 @@ export default function BranchScreen() {
                 <View style={styles.cardContent}>
                   <View style={styles.cardHeader}>
                     <View style={[styles.branchBadge, { backgroundColor: T.accent + "20" }]}>
-                      <Text style={styles.branchBadgeText}>
+                      <Text style={[styles.branchBadgeText, { color: T.accent }]}>
                         {capitalize(branch.firstname).charAt(0)}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={[styles.branchName, { color: "#fff" }]}>
+                      <Text style={[styles.branchName, { color: T.text }]}>
                         {capitalize(branch.firstname)}
                       </Text>
                       <Text style={[styles.branchSub, { color: T.accent }]}>
-                        Branch #{index + 1}
+                        Branch {index + 1}
                       </Text>
                     </View>
                   </View>
@@ -203,11 +203,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   menuIcon: {
-    color: "#fff",
     fontSize: 22,
   },
   headerTitle: {
-    color: "#fff",
     fontSize: 18,
     fontWeight: "700",
   },
@@ -241,7 +239,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   emptyText: {
-    color: "#aaa",
     fontSize: 14,
   },
   card: {
@@ -272,7 +269,6 @@ const styles = StyleSheet.create({
   branchBadgeText: {
     fontSize: 20,
     fontWeight: "800",
-    color: "#fff",
   },
   branchName: {
     fontSize: 17,
@@ -302,7 +298,6 @@ const styles = StyleSheet.create({
   },
   actionBtnLabel: {
     fontSize: 10,
-    color: "#888",
     fontWeight: "500",
     textTransform: "uppercase",
     letterSpacing: 0.5,

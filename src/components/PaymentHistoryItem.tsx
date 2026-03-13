@@ -1,17 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { MemberPaymentHistory } from "../types/api";
+import { useMemberInfo } from "../context/MemberInfoContext";
 
 interface Props {
   item: MemberPaymentHistory;
   accentColor?: string;
 }
 
-export default function PaymentHistoryItem({ item, accentColor = "#FF6B35" }: Props) {
+export default function PaymentHistoryItem({ item, accentColor = "#C62828" }: Props) {
+  const { theme: T } = useMemberInfo();
   return (
-    <View style={[styles.card, { borderLeftColor: accentColor }]}>
+    <View style={[styles.card, { borderLeftColor: accentColor, backgroundColor: T.card, borderColor: T.border }]}>
       <View style={styles.topRow}>
-        <Text style={styles.receiptNo}>{item.receiptNo}</Text>
+        <Text style={[styles.receiptNo, { color: T.text }]}>{item.receiptNo}</Text>
         <View style={styles.amountBadge}>
           <Text style={styles.amountText}>Rs. {item.finalAmount}</Text>
         </View>
@@ -58,13 +60,11 @@ export default function PaymentHistoryItem({ item, accentColor = "#FF6B35" }: Pr
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#16213e",
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
     borderLeftWidth: 4,
     borderWidth: 1,
-    borderColor: "#2a2a4a",
   },
   topRow: {
     flexDirection: "row",
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
   receiptNo: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#fff",
     fontFamily: "monospace",
   },
   amountBadge: {
@@ -113,7 +112,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     fontSize: 13,
-    color: "#ddd",
+    color: "#888",
     fontWeight: "500",
   },
 });

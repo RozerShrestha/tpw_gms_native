@@ -65,7 +65,7 @@ function formatHour(hour: number): string {
 
 // ─── Branch color palette ────────────────────────────────
 const BRANCH_COLORS = [
-  "#FF6B35", // orange
+  "#C62828", // red
   "#22d3ee", // cyan
   "#a78bfa", // violet
   "#34d399", // emerald
@@ -193,12 +193,12 @@ export default function HourlyAttendanceChart({
       <View style={styles.headerRow}>
         <Text style={styles.headerIcon}>📊</Text>
         <View style={{ flex: 1 }}>
-          <Text style={[styles.title, { color: "#fff" }]}>
+          <Text style={[styles.title, { color: T.text }]}>
             {selectedOption?.isToday
               ? "Today's Gym Traffic"
               : `Gym Traffic · ${selectedOption?.shortLabel}`}
           </Text>
-          <Text style={styles.subtitle}>Hourly check-ins · swipe to scroll</Text>
+          <Text style={[styles.subtitle, { color: T.textMuted }]}>Hourly check-ins · swipe to scroll</Text>
         </View>
         {!loading && !error && (
           <View style={styles.badgeRow}>
@@ -227,6 +227,7 @@ export default function HourlyAttendanceChart({
               activeOpacity={0.7}
               style={[
                 styles.dateChip,
+                { borderColor: T.overlay, backgroundColor: T.overlay },
                 isActive && {
                   backgroundColor: T.accent,
                   borderColor: T.accent,
@@ -236,6 +237,7 @@ export default function HourlyAttendanceChart({
               <Text
                 style={[
                   styles.dateChipLabel,
+                  { color: T.textMuted },
                   isActive && styles.dateChipLabelActive,
                 ]}
               >
@@ -244,6 +246,7 @@ export default function HourlyAttendanceChart({
               <Text
                 style={[
                   styles.dateChipDate,
+                  { color: T.textMuted },
                   isActive && styles.dateChipDateActive,
                 ]}
               >
@@ -258,12 +261,12 @@ export default function HourlyAttendanceChart({
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={T.accent} />
-          <Text style={styles.loadingText}>Loading traffic data...</Text>
+          <Text style={[styles.loadingText, { color: T.textMuted }]}>Loading traffic data...</Text>
         </View>
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : data.length === 0 ? (
-        <Text style={styles.emptyText}>
+        <Text style={[styles.emptyText, { color: T.textMuted }]}>
           No check-ins recorded{selectedOption?.isToday ? " today" : ` on ${selectedOption?.shortLabel}`}
         </Text>
       ) : (
@@ -279,7 +282,7 @@ export default function HourlyAttendanceChart({
                       { backgroundColor: branchColorMap[b] },
                     ]}
                   />
-                  <Text style={styles.legendText}>{b}</Text>
+                  <Text style={[styles.legendText, { color: T.textSecondary }]}>{b}</Text>
                 </View>
               ))}
             </View>
@@ -307,14 +310,14 @@ export default function HourlyAttendanceChart({
                       y1={y}
                       x2={svgWidth - 4}
                       y2={y}
-                      stroke="rgba(255,255,255,0.06)"
+                      stroke={T.isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}
                       strokeWidth={1}
                     />
                     <SvgText
                       x={PADDING_LEFT - 6}
                       y={y + 4}
                       fontSize={9}
-                      fill="rgba(255,255,255,0.35)"
+                      fill={T.isDark ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.35)"}
                       textAnchor="end"
                     >
                       {tick}
@@ -363,7 +366,7 @@ export default function HourlyAttendanceChart({
                               x={x + SUB_BAR_WIDTH / 2}
                               y={y - 4}
                               fontSize={7}
-                              fill="rgba(255,255,255,0.7)"
+                              fill={T.isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.7)"}
                               textAnchor="middle"
                               fontWeight="600"
                             >
@@ -378,7 +381,7 @@ export default function HourlyAttendanceChart({
                       x={groupX + groupWidth / 2}
                       y={CHART_HEIGHT - 6}
                       fontSize={9}
-                      fill="rgba(255,255,255,0.45)"
+                      fill={T.isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)"}
                       textAnchor="middle"
                     >
                       {formatHour(hour)}
@@ -400,9 +403,9 @@ export default function HourlyAttendanceChart({
 
           {/* Peak hour info */}
           {peakEntry && (
-            <View style={styles.peakRow}>
+            <View style={[styles.peakRow, { borderTopColor: T.isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }]}>
               <Text style={styles.peakIcon}>🔥</Text>
-              <Text style={styles.peakText}>
+              <Text style={[styles.peakText, { color: T.textSecondary }]}>
                 Peak:{" "}
                 <Text style={{ color: branchColorMap[peakEntry.branch] ?? T.accent, fontWeight: "700" }}>
                   {peakEntry.branch}
@@ -452,14 +455,10 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    minWidth: 54,
   },
   dateChipLabel: {
     fontSize: 10,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.5)",
     textTransform: "uppercase",
     letterSpacing: 0.3,
   },
@@ -468,7 +467,6 @@ const styles = StyleSheet.create({
   },
   dateChipDate: {
     fontSize: 9,
-    color: "rgba(255,255,255,0.35)",
     marginTop: 1,
   },
   dateChipDateActive: {
@@ -485,7 +483,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 10,
-    color: "rgba(255,255,255,0.35)",
     marginTop: 1,
   },
   badgeRow: {
@@ -518,7 +515,6 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 10,
-    color: "rgba(255,255,255,0.55)",
     textTransform: "capitalize",
   },
   scrollContent: {
@@ -539,7 +535,6 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 8,
     fontSize: 11,
-    color: "rgba(255,255,255,0.4)",
   },
   errorText: {
     fontSize: 12,
@@ -549,7 +544,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 12,
-    color: "rgba(255,255,255,0.4)",
     textAlign: "center",
     paddingVertical: 20,
   },
@@ -559,7 +553,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.06)",
   },
   peakIcon: {
     fontSize: 13,
@@ -567,6 +560,5 @@ const styles = StyleSheet.create({
   },
   peakText: {
     fontSize: 11,
-    color: "rgba(255,255,255,0.55)",
   },
 });

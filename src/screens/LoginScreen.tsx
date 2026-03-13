@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -15,18 +15,43 @@ import {
   Dimensions,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
+import { useAppTheme } from "../context/AppThemeContext";
 import { resetPassword } from "../api/auth";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const LOGO_W = Math.min(SCREEN_W * 0.55, 240);
 
 const ACCENT = "#C62828";
-const ACCENT_DARK = "#8E0000";
-const BG = "#0B0B0F";
-const CARD_BG = "#141418";
-const INPUT_BG = "#1C1C22";
-const BORDER_CLR = "#2A2A30";
-const BORDER_FOCUS = "#C62828";
+
+function getColors(isDark: boolean) {
+  return isDark
+    ? {
+        bg: "#0B0B0F",
+        card: "#141418",
+        inputBg: "#1C1C22",
+        border: "#2A2A30",
+        text: "#ffffff",
+        textSecondary: "#888888",
+        textMuted: "#555555",
+        placeholder: "#555",
+        focusBg: "#1A1014",
+        modalOverlay: "rgba(0,0,0,0.85)",
+        footerText: "#333",
+      }
+    : {
+        bg: "#F5F5F8",
+        card: "#FFFFFF",
+        inputBg: "#F0F0F5",
+        border: "#E0E0E6",
+        text: "#1a1a2e",
+        textSecondary: "#666666",
+        textMuted: "#999999",
+        placeholder: "#aaa",
+        focusBg: "#FFF0F0",
+        modalOverlay: "rgba(0,0,0,0.45)",
+        footerText: "#bbb",
+      };
+}
 
 /** Cross-platform alert (Alert.alert is unsupported on web) */
 function showAlert(title: string, message: string) {
@@ -39,6 +64,8 @@ function showAlert(title: string, message: string) {
 
 export default function LoginScreen() {
   const { login } = useAuth();
+  const { isDark } = useAppTheme();
+  const C = useMemo(() => getColors(isDark), [isDark]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -103,7 +130,7 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: C.bg }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView
@@ -113,7 +140,7 @@ export default function LoginScreen() {
       >
         {/* ── Logo & Branding ── */}
         <View style={styles.logoSection}>
-          <View style={styles.logoGlow}>
+          <View style={[styles.logoContainer, !isDark && styles.logoContainerLight]}>
             <Image
               source={require("../../assets/tpw-logo.png")}
               style={styles.logo}
@@ -124,26 +151,27 @@ export default function LoginScreen() {
 
         {/* ── Divider accent line ── */}
         <View style={styles.divider}>
-          <View style={styles.dividerLine} />
+          <View style={[styles.dividerLine, { backgroundColor: C.border }]} />
           <Text style={styles.dividerText}>SIGN IN</Text>
-          <View style={styles.dividerLine} />
+          <View style={[styles.dividerLine, { backgroundColor: C.border }]} />
         </View>
 
         {/* ── Login Card ── */}
-        <View style={styles.card}>
+        <View style={[styles.card, { backgroundColor: C.card, borderColor: C.border }]}>
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>USERNAME</Text>
+            <Text style={[styles.label, { color: C.textSecondary }]}>USERNAME</Text>
             <View
               style={[
                 styles.inputWrapper,
-                usernameFocused && styles.inputWrapperFocused,
+                { backgroundColor: C.inputBg, borderColor: C.border },
+                usernameFocused && { borderColor: ACCENT, backgroundColor: C.focusBg },
               ]}
             >
               <Text style={styles.inputIcon}>👤</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: C.text }]}
                 placeholder="Enter your username"
-                placeholderTextColor="#555"
+                placeholderTextColor={C.placeholder}
                 value={username}
                 onChangeText={setUsername}
                 autoCapitalize="none"
@@ -156,18 +184,19 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>PASSWORD</Text>
+            <Text style={[styles.label, { color: C.textSecondary }]}>PASSWORD</Text>
             <View
               style={[
                 styles.inputWrapper,
-                passwordFocused && styles.inputWrapperFocused,
+                { backgroundColor: C.inputBg, borderColor: C.border },
+                passwordFocused && { borderColor: ACCENT, backgroundColor: C.focusBg },
               ]}
             >
               <Text style={styles.inputIcon}>🔒</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: C.text }]}
                 placeholder="Enter your password"
-                placeholderTextColor="#555"
+                placeholderTextColor={C.placeholder}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -199,7 +228,7 @@ export default function LoginScreen() {
             activeOpacity={0.7}
             style={styles.forgotLink}
           >
-            <Text style={styles.forgotLinkText}>Reset Password?</Text>
+            <Text style={[styles.forgotLinkText, { color: C.textSecondary }]}>Reset Password?</Text>
           </TouchableOpacity>
         </View>
 
@@ -210,23 +239,23 @@ export default function LoginScreen() {
           animationType="fade"
           onRequestClose={() => setResetModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalCard}>
+          <View style={[styles.modalOverlay, { backgroundColor: C.modalOverlay }]}>
+            <View style={[styles.modalCard, { backgroundColor: C.card, borderColor: C.border }]}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Reset Password</Text>
-                <Text style={styles.modalSubtitle}>
+                <Text style={[styles.modalTitle, { color: C.text }]}>Reset Password</Text>
+                <Text style={[styles.modalSubtitle, { color: C.textMuted }]}>
                   Enter your credentials and new password
                 </Text>
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>USERNAME</Text>
-                <View style={styles.inputWrapper}>
+                <Text style={[styles.label, { color: C.textSecondary }]}>USERNAME</Text>
+                <View style={[styles.inputWrapper, { backgroundColor: C.inputBg, borderColor: C.border }]}>
                   <Text style={styles.inputIcon}>👤</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { color: C.text }]}
                     placeholder="Enter your username"
-                    placeholderTextColor="#555"
+                    placeholderTextColor={C.placeholder}
                     value={resetUsername}
                     onChangeText={setResetUsername}
                     autoCapitalize="none"
@@ -237,13 +266,13 @@ export default function LoginScreen() {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>CURRENT PASSWORD</Text>
-                <View style={styles.inputWrapper}>
+                <Text style={[styles.label, { color: C.textSecondary }]}>CURRENT PASSWORD</Text>
+                <View style={[styles.inputWrapper, { backgroundColor: C.inputBg, borderColor: C.border }]}>
                   <Text style={styles.inputIcon}>🔒</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { color: C.text }]}
                     placeholder="Enter current password"
-                    placeholderTextColor="#555"
+                    placeholderTextColor={C.placeholder}
                     value={resetCurrentPassword}
                     onChangeText={setResetCurrentPassword}
                     secureTextEntry
@@ -253,13 +282,13 @@ export default function LoginScreen() {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>NEW PASSWORD</Text>
-                <View style={styles.inputWrapper}>
+                <Text style={[styles.label, { color: C.textSecondary }]}>NEW PASSWORD</Text>
+                <View style={[styles.inputWrapper, { backgroundColor: C.inputBg, borderColor: C.border }]}>
                   <Text style={styles.inputIcon}>🔑</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { color: C.text }]}
                     placeholder="Enter new password"
-                    placeholderTextColor="#555"
+                    placeholderTextColor={C.placeholder}
                     value={resetNewPassword}
                     onChangeText={setResetNewPassword}
                     secureTextEntry
@@ -290,14 +319,14 @@ export default function LoginScreen() {
                 style={styles.cancelBtn}
                 disabled={resetLoading}
               >
-                <Text style={styles.cancelBtnText}>Cancel</Text>
+                <Text style={[styles.cancelBtnText, { color: C.textSecondary }]}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
 
         {/* ── Footer ── */}
-        <Text style={styles.footer}>
+        <Text style={[styles.footer, { color: C.footerText }]}>
           © The Physique Workshop
         </Text>
       </ScrollView>
@@ -309,7 +338,6 @@ const styles = StyleSheet.create({
   /* ── Layout ── */
   container: {
     flex: 1,
-    backgroundColor: BG,
   },
   scrollContent: {
     flexGrow: 1,
@@ -323,23 +351,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 32,
   },
-  logoGlow: {
+  logoContainer: {
+    backgroundColor: "#0B0B0F",
+    borderRadius: 18,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
     shadowColor: ACCENT,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.35,
     shadowRadius: 30,
     elevation: 12,
   },
+  logoContainerLight: {
+    backgroundColor: "#1e1e26",
+    shadowColor: "#1e1e26",
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 4,
+  },
   logo: {
     width: LOGO_W,
     height: LOGO_W * 0.55,
-  },
-  tagline: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#777",
-    letterSpacing: 4,
-    marginTop: 12,
   },
 
   /* ── Divider ── */
@@ -352,7 +384,6 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: BORDER_CLR,
   },
   dividerText: {
     color: ACCENT,
@@ -364,11 +395,9 @@ const styles = StyleSheet.create({
 
   /* ── Card ── */
   card: {
-    backgroundColor: CARD_BG,
     borderRadius: 20,
     padding: 24,
     borderWidth: 1,
-    borderColor: BORDER_CLR,
   },
 
   /* ── Inputs ── */
@@ -378,22 +407,15 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#888",
     letterSpacing: 1.5,
     marginBottom: 8,
   },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: INPUT_BG,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: BORDER_CLR,
     paddingHorizontal: 14,
-  },
-  inputWrapperFocused: {
-    borderColor: BORDER_FOCUS,
-    backgroundColor: "#1A1014",
   },
   inputIcon: {
     fontSize: 16,
@@ -403,7 +425,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
-    color: "#fff",
     paddingVertical: 14,
     paddingHorizontal: 8,
   },
@@ -437,7 +458,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   forgotLinkText: {
-    color: "#888",
     fontSize: 13,
     fontWeight: "500",
   },
@@ -445,7 +465,6 @@ const styles = StyleSheet.create({
   /* ── Footer ── */
   footer: {
     textAlign: "center",
-    color: "#333",
     fontSize: 11,
     marginTop: 32,
     letterSpacing: 1,
@@ -454,16 +473,13 @@ const styles = StyleSheet.create({
   /* ── Modal ── */
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.85)",
     justifyContent: "center",
     paddingHorizontal: 28,
   },
   modalCard: {
-    backgroundColor: CARD_BG,
     borderRadius: 20,
     padding: 24,
     borderWidth: 1,
-    borderColor: BORDER_CLR,
   },
   modalHeader: {
     marginBottom: 24,
@@ -471,12 +487,10 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#fff",
     marginBottom: 4,
   },
   modalSubtitle: {
     fontSize: 13,
-    color: "#666",
   },
   cancelBtn: {
     marginTop: 14,
@@ -484,7 +498,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   cancelBtnText: {
-    color: "#888",
     fontSize: 14,
     fontWeight: "600",
   },

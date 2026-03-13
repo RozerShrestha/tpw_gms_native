@@ -28,8 +28,8 @@ export default function NavigationCard({
       <View style={styles.leftSection}>
         <Text style={styles.icon}>{icon}</Text>
         <View style={{ flex: 1 }}>
-          <Text style={[styles.title, { color: "#fff" }]}>{title}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          <Text style={[styles.title, { color: T.text }]}>{title}</Text>
+          <Text style={[styles.subtitle, { color: T.textSecondary }]}>{subtitle}</Text>
         </View>
       </View>
       <View style={styles.rightSection}>
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 12,
-    color: "#888",
     marginTop: 2,
   },
   rightSection: {

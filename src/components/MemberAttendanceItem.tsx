@@ -25,7 +25,7 @@ function shortDate(raw: string): string {
 
 /** Table header row – render once above the list */
 export function MemberAttendanceTableHeader({
-  accentColor = "#FF6B35",
+  accentColor = "#C62828",
   isGuest = false,
 }: {
   accentColor?: string;
@@ -49,7 +49,7 @@ export function MemberAttendanceTableHeader({
 /** Scrollable wrapper for the whole table (header + rows) */
 export function MemberAttendanceTable({
   children,
-  accentColor = "#FF6B35",
+  accentColor = "#C62828",
   isGuest = false,
 }: {
   children: React.ReactNode;
@@ -85,7 +85,7 @@ export function MemberAttendanceTable({
 export default function MemberAttendanceItem({
   item,
   index,
-  accentColor = "#FF6B35",
+  accentColor = "#C62828",
   isGuest = false,
 }: Props) {
   const isEven = index % 2 === 0;

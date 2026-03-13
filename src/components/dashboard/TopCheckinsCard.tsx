@@ -87,7 +87,7 @@ export default function TopCheckinsCard({
   if (loading) {
     return (
       <View style={[styles.card, { backgroundColor: T.card, borderColor: T.border }]}>
-        <Text style={styles.sectionTitle}>🏆 Top Check-ins</Text>
+        <Text style={[styles.sectionTitle, { color: T.text }]}>🏆 Top Check-ins</Text>
         <ActivityIndicator size="small" color={T.accent} style={{ marginVertical: 20 }} />
       </View>
     );
@@ -177,7 +177,7 @@ export default function TopCheckinsCard({
         </View>
 
         {/* Name */}
-        <Text style={styles.slideName} numberOfLines={2}>
+        <Text style={[styles.slideName, { color: T.text }]} numberOfLines={2}>
           {item.fullname}
         </Text>
 
@@ -197,8 +197,8 @@ export default function TopCheckinsCard({
         </View>
 
         {/* Branch */}
-        <View style={[styles.branchPill, { backgroundColor: "rgba(255,255,255,0.06)" }]}>
-          <Text style={styles.branchText}>📍 {item.branch}</Text>
+        <View style={[styles.branchPill, { backgroundColor: T.overlay }]}>
+          <Text style={[styles.branchText, { color: T.textMuted }]}>📍 {item.branch}</Text>
         </View>
       </View>
     );
@@ -208,7 +208,7 @@ export default function TopCheckinsCard({
     <View style={[styles.card, { backgroundColor: T.card, borderColor: T.border }]}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={styles.sectionTitle}>🏆 Top Check-ins</Text>
+        <Text style={[styles.sectionTitle, { color: T.text }]}>🏆 Top Check-ins</Text>
         <Text style={[styles.subtitle, { color: T.accent }]}>
           {branch ? capitalize(branch) : "This Year"}
         </Text>
@@ -237,7 +237,7 @@ export default function TopCheckinsCard({
               styles.dot,
               {
                 backgroundColor:
-                  idx === activeIndex ? T.accent : "rgba(255,255,255,0.2)",
+                  idx === activeIndex ? T.accent : T.overlay,
                 width: idx === activeIndex ? 18 : 6,
               },
             ]}
@@ -267,7 +267,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 17,
     fontWeight: "800",
-    color: "#fff",
   },
   subtitle: {
     fontSize: 12,
@@ -310,7 +309,6 @@ const styles = StyleSheet.create({
   },
   slideName: {
     fontSize: 10,
-    color: "#fff",
     fontWeight: "700",
     textAlign: "center",
     textTransform: "capitalize",
@@ -342,7 +340,6 @@ const styles = StyleSheet.create({
   },
   branchText: {
     fontSize: 9,
-    color: "rgba(255,255,255,0.5)",
     textTransform: "capitalize",
   },
 

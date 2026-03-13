@@ -1,19 +1,21 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { StaffAttendance } from "../types/api";
+import { useMemberInfo } from "../context/MemberInfoContext";
 
 interface Props {
   item: StaffAttendance;
   accentColor?: string;
 }
 
-export default function AttendanceItem({ item, accentColor = "#FF6B35" }: Props) {
+export default function AttendanceItem({ item, accentColor = "#C62828" }: Props) {
+  const { theme: T } = useMemberInfo();
   const isLate = item.lateFlag === true;
 
   return (
-    <View style={[styles.card, { borderLeftColor: isLate ? "#ef4444" : accentColor }, isLate && styles.lateCard]}>
+    <View style={[styles.card, { backgroundColor: T.card, borderColor: T.border, borderLeftColor: isLate ? "#ef4444" : accentColor }, isLate && styles.lateCard]}>
       <View style={styles.topRow}>
-        <Text style={styles.name}>{item.fullName}</Text>
+        <Text style={[styles.name, { color: T.text }]}>{item.fullName}</Text>
         {isLate ? (
           <View style={styles.lateBadge}>
             <Text style={styles.lateBadgeText}>LATE</Text>
@@ -29,30 +31,30 @@ export default function AttendanceItem({ item, accentColor = "#FF6B35" }: Props)
         <View style={styles.detailItem}>
           <Text style={styles.detailIcon}>&#x1F3E2;</Text>
           <View>
-            <Text style={styles.detailLabel}>Branch</Text>
-            <Text style={styles.detailValue}>{item.branch}</Text>
+            <Text style={[styles.detailLabel, { color: T.textSecondary }]}>Branch</Text>
+            <Text style={[styles.detailValue, { color: T.text }]}>{item.branch}</Text>
           </View>
         </View>
 
         <View style={styles.detailItem}>
           <Text style={styles.detailIcon}>&#x2705;</Text>
           <View>
-            <Text style={styles.detailLabel}>Check-in</Text>
-            <Text style={styles.detailValue}>{item.checkin}</Text>
+            <Text style={[styles.detailLabel, { color: T.textSecondary }]}>Check-in</Text>
+            <Text style={[styles.detailValue, { color: T.text }]}>{item.checkin}</Text>
           </View>
         </View>
 
         <View style={styles.detailItem}>
           <Text style={styles.detailIcon}>&#x1F6AA;</Text>
           <View>
-            <Text style={styles.detailLabel}>Check-out</Text>
-            <Text style={styles.detailValue}>{item.checkout}</Text>
+            <Text style={[styles.detailLabel, { color: T.textSecondary }]}>Check-out</Text>
+            <Text style={[styles.detailValue, { color: T.text }]}>{item.checkout}</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.remarkRow}>
-        <Text style={styles.remarkLabel}>Remark:</Text>
+        <Text style={[styles.remarkLabel, { color: T.textSecondary }]}>Remark:</Text>
         <Text style={[styles.remarkValue, isLate && styles.lateRemarkText]}>
           {item.remark}
         </Text>
@@ -63,13 +65,11 @@ export default function AttendanceItem({ item, accentColor = "#FF6B35" }: Props)
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#16213e",
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
     borderLeftWidth: 4,
     borderWidth: 1,
-    borderColor: "#2a2a4a",
   },
   lateCard: {
     borderLeftColor: "#ef4444",
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#fff",
     flex: 1,
     textTransform: "capitalize",
   },
@@ -128,13 +127,11 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 11,
-    color: "#888",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   detailValue: {
     fontSize: 13,
-    color: "#ddd",
     fontWeight: "500",
   },
   remarkRow: {
@@ -143,11 +140,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: "#2a2a4a",
+    borderTopColor: "rgba(128,128,128,0.2)",
   },
   remarkLabel: {
     fontSize: 12,
-    color: "#888",
     fontWeight: "500",
     marginRight: 8,
   },

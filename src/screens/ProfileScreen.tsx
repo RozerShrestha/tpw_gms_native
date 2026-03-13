@@ -64,7 +64,7 @@ export default function ProfileScreen() {
   if (!memberInfo) {
     return (
       <View style={[styles.container, { backgroundColor: T.bg }]}>
-        <Text style={{ color: "#aaa", textAlign: "center", marginTop: 40 }}>
+        <Text style={{ color: T.textSecondary, textAlign: "center", marginTop: 40 }}>
           No member information available.
         </Text>
       </View>
@@ -97,9 +97,9 @@ export default function ProfileScreen() {
           style={[styles.menuBtn, { borderColor: T.border }]}
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         >
-          <Text style={styles.menuIcon}>{"\u2630"}</Text>
+          <Text style={[styles.menuIcon, { color: T.text }]}>{"\u2630"}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Profile</Text>
+        <Text style={[styles.headerTitle, { color: T.text }]}>Profile</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -116,7 +116,7 @@ export default function ProfileScreen() {
             </View>
           )}
         </View>
-        <Text style={[styles.fullName, { color: "#fff" }]}>
+        <Text style={[styles.fullName, { color: T.text }]}>
           {displayName}
         </Text>
         <Text style={[styles.memberId, { color: T.accent }]}>
@@ -257,11 +257,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   menuIcon: {
-    color: "#fff",
     fontSize: 22,
   },
   headerTitle: {
-    color: "#fff",
     fontSize: 18,
     fontWeight: "700",
   },
@@ -287,7 +285,7 @@ const styles = StyleSheet.create({
     borderRadius: 70,
   },
   avatarPlaceholder: {
-    backgroundColor: "#2a2a4a",
+    backgroundColor: "#aaa",
     alignItems: "center",
     justifyContent: "center",
   },

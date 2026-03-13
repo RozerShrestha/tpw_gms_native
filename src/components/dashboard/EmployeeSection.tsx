@@ -34,7 +34,7 @@ export default function EmployeeSection({
           ]}
         >
           <Text style={styles.emptyIcon}>&#x1F4AD;</Text>
-          <Text style={styles.emptyText}>
+          <Text style={[styles.emptyText, { color: T.textMuted }]}>
             No staff attendance records found.
           </Text>
         </View>
@@ -62,6 +62,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: "#666",
   },
 });

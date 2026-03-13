@@ -59,7 +59,7 @@ export default function ClientAttendanceSection({
           ]}
         >
           <Text style={styles.emptyIcon}>&#x1F4AD;</Text>
-          <Text style={styles.emptyText}>No attendance records found.</Text>
+          <Text style={[styles.emptyText, { color: T.textMuted }]}>No attendance records found.</Text>
         </View>
       )}
     </>
@@ -85,6 +85,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: "#666",
   },
 });

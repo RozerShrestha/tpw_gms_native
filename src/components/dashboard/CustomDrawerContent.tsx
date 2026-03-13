@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  Switch,
 } from "react-native";
 import {
   DrawerContentScrollView,
@@ -17,6 +18,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../../context/AuthContext";
 import { useMemberInfo } from "../../context/MemberInfoContext";
+import { useAppTheme } from "../../context/AppThemeContext";
 import { DashboardTheme, THEME_MALE } from "./theme";
 import { API_BASE_URL } from "../../api/config";
 import { uploadProfilePicture, fetchMemberLoginInfo } from "../../api/member";
@@ -43,6 +45,7 @@ export default function CustomDrawerContent(
 ) {
   const { logout, accessToken, memberId: authMemberId } = useAuth();
   const { memberInfo, setMemberInfo: setGlobalMemberInfo } = useMemberInfo();
+  const { isDark, toggleTheme } = useAppTheme();
   const T = props.theme ?? THEME_MALE;
   const { fullname, memberId, memberOption, role, memberStatus, imageLoc } = props;
   // The plain-text memberId (e.g. "TPW-02-06013872") comes from memberInfo
@@ -268,6 +271,7 @@ export default function CustomDrawerContent(
               <Text
                 style={[
                   styles.menuLabel,
+                  { color: T.textSecondary },
                   isActive && { color: T.accent, fontWeight: "700" },
                 ]}
               >
@@ -279,6 +283,22 @@ export default function CustomDrawerContent(
 
         {/* ── Divider ──────────────────────────────────────── */}
         <View style={[styles.divider, { backgroundColor: T.border }]} />
+
+        {/* ── Theme Toggle ─────────────────────────────────── */}
+        <View style={styles.themeToggleRow}>
+          <Text style={[styles.menuIcon, { fontSize: 20 }]}>
+            {isDark ? "\u{1F319}" : "\u{2600}\u{FE0F}"}
+          </Text>
+          <Text style={[styles.menuLabel, { color: T.textSecondary }]}>
+            {isDark ? "Dark Mode" : "Light Mode"}
+          </Text>
+          <Switch
+            value={isDark}
+            onValueChange={toggleTheme}
+            trackColor={{ false: "#ccc", true: T.accent }}
+            thumbColor="#fff"
+          />
+        </View>
       </ScrollView>
 
       {/* ── Logout Button ──────────────────────────────────── */}
@@ -393,6 +413,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "#ccc",
+  },
+  themeToggleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    gap: 16,
   },
   divider: {
     height: 1,

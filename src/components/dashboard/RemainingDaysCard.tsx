@@ -31,7 +31,7 @@ export default function RemainingDaysCard({
             ? "Expires Today!"
             : `Day${remainingDays !== 1 ? "s" : ""} Remaining`}
         </Text>
-        <Text style={styles.daysSub}>Expires on {expireDate}</Text>
+        <Text style={[styles.daysSub, { color: T.textSecondary }]}>Expires on {expireDate}</Text>
       </View>
     </View>
   );
@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   },
   daysSub: {
     fontSize: 12,
-    color: "#888",
     marginTop: 2,
   },
 });

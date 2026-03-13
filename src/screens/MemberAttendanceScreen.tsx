@@ -47,9 +47,9 @@ export default function MemberAttendanceScreen() {
           style={[styles.menuBtn, { borderColor: T.border }]}
           onPress={() => navigation.openDrawer()}
         >
-          <Text style={styles.menuIcon}>{"\u2630"}</Text>
+          <Text style={[styles.menuIcon, { color: T.text }]}>{"\u2630"}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Attendance</Text>
+        <Text style={[styles.headerTitle, { color: T.text }]}>My Attendance</Text>
         <View style={[styles.countBadge, { backgroundColor: T.accent }]}>
           <Text style={styles.countText}>{attendanceRecords.length}</Text>
         </View>
@@ -79,7 +79,7 @@ export default function MemberAttendanceScreen() {
             ]}
           >
             <Text style={styles.emptyIcon}>&#x1F4AD;</Text>
-            <Text style={styles.emptyText}>
+            <Text style={[styles.emptyText, { color: T.textMuted }]}>
               No attendance records found.
             </Text>
           </View>
@@ -106,20 +106,17 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.08)",
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   menuIcon: {
     fontSize: 20,
-    color: "#fff",
   },
   headerTitle: {
     flex: 1,
     fontSize: 20,
     fontWeight: "800",
-    color: "#fff",
   },
   countBadge: {
     borderRadius: 12,
@@ -152,6 +149,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: "#666",
   },
 });

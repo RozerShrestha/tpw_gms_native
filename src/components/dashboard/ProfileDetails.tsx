@@ -23,7 +23,7 @@ export default function ProfileDetails({
       <Text style={[styles.sectionTitle, { color: T.accent }]}>
         &#x1F464;  Profile Details
       </Text>
-      <View style={styles.divider} />
+      <View style={[styles.divider, { backgroundColor: T.border }]} />
       <InfoRow label="Member ID" value={memberInfo.memberId} accent={T.accent} />
       <InfoRow label="Type" value={memberInfo.memberOption} accent={T.accent} />
       <InfoRow label="Category" value={memberInfo.memberCatagory} accent={T.accent} />
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: "#2a2a4a",
     marginVertical: 12,
   },
 });

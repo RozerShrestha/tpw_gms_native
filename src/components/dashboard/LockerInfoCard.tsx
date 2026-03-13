@@ -24,7 +24,7 @@ export default function LockerInfoCard({
       style={[
         styles.membershipCard,
         {
-          backgroundColor: isLockerExpired ? "#2a1015" : T.card,
+          backgroundColor: isLockerExpired ? (T.isDark ? "#2a1015" : "#fef2f2") : T.card,
           borderColor: isLockerExpired ? "#ef4444" : T.accent,
           borderLeftColor: isLockerExpired ? "#ef4444" : T.accent,
         },
@@ -46,7 +46,7 @@ export default function LockerInfoCard({
           </Text>
         
       </View>
-      <View style={styles.divider} />
+      <View style={[styles.divider, { backgroundColor: T.border }]} />
       <InfoRow
         label="Locker No."
         value={String(locker.lockerNumber)}
@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: "#2a2a4a",
     marginVertical: 12,
   },
   daysBadge: {

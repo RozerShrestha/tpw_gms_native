@@ -29,7 +29,7 @@ export default function QuickStats({
         <Text style={[styles.statValue, { color: T.accent }]}>
           {checkInsCount}
         </Text>
-        <Text style={styles.statLabel}>Check-ins</Text>
+        <Text style={[styles.statLabel, { color: T.textSecondary }]}>Check-ins</Text>
       </View>
       <View
         style={[
@@ -38,19 +38,19 @@ export default function QuickStats({
         ]}
       >
         <Text style={styles.statIcon}>&#x1F3E2;</Text>
-        <Text style={styles.statValue}>{branch ?? "—"}</Text>
-        <Text style={styles.statLabel}>Branch</Text>
+        <Text style={[styles.statValue, { color: T.text }]}>{branch ?? "—"}</Text>
+        <Text style={[styles.statLabel, { color: T.textSecondary }]}>Branch</Text>
       </View>
       <View
         style={[
           styles.statCard,
           { backgroundColor: T.card, borderColor: T.border },
-          hasDue ? styles.statCardAlert : null,
+          hasDue ? [styles.statCardAlert, { backgroundColor: T.isDark ? "#1e1529" : "#fef2f2" }] : null,
         ]}
       >
         <Text style={styles.statIcon}>&#x1F4B0;</Text>
-        <Text style={styles.statValue}>Rs.{dueAmount ?? 0}</Text>
-        <Text style={styles.statLabel}>Due</Text>
+        <Text style={[styles.statValue, { color: T.text }]}>Rs.{dueAmount ?? 0}</Text>
+        <Text style={[styles.statLabel, { color: T.textSecondary }]}>Due</Text>
       </View>
     </View>
   );
@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
   },
   statCardAlert: {
     borderColor: "#ef4444",
-    backgroundColor: "#1e1529",
   },
   statIcon: {
     fontSize: 20,
@@ -80,13 +79,11 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#fff",
     textAlign: "center",
     textTransform: "capitalize",
   },
   statLabel: {
     fontSize: 11,
-    color: "#888",
     marginTop: 2,
     textTransform: "uppercase",
     letterSpacing: 0.5,

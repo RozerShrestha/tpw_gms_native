@@ -106,11 +106,11 @@ function MonthlyTable({
           key={item.feeId}
           style={[
             tableStyles.row,
-            idx % 2 === 1 && { backgroundColor: "rgba(255,255,255,0.03)" },
+            idx % 2 === 1 && { backgroundColor: T.overlay },
           ]}
         >
           <View style={tableStyles.typeCell}>
-            <Text style={tableStyles.typeText}>{item.membershipType}</Text>
+            <Text style={[tableStyles.typeText, { color: T.textSecondary }]}>{item.membershipType}</Text>
           </View>
           {columns.map((col) => (
             <View key={col.key} style={tableStyles.priceCell}>
@@ -118,8 +118,8 @@ function MonthlyTable({
                 style={[
                   tableStyles.priceText,
                   item[col.key] && item[col.key] !== "" && item[col.key] !== "-"
-                    ? { color: "#fff" }
-                    : { color: "rgba(255,255,255,0.3)" },
+                    ? { color: T.text }
+                    : { color: T.textMuted },
                 ]}
               >
                 {formatPrice(item[col.key])}
@@ -161,14 +161,14 @@ function PerDayTable({
           key={item.feeId}
           style={[
             tableStyles.row,
-            idx % 2 === 1 && { backgroundColor: "rgba(255,255,255,0.03)" },
+            idx % 2 === 1 && { backgroundColor: T.overlay },
           ]}
         >
           <View style={[tableStyles.typeCell, { flex: 1 }]}>
-            <Text style={tableStyles.typeText}>{item.membershipType}</Text>
+            <Text style={[tableStyles.typeText, { color: T.textSecondary }]}>{item.membershipType}</Text>
           </View>
           <View style={[tableStyles.priceCell, { flex: 1 }]}>
-            <Text style={[tableStyles.priceText, { color: "#fff" }]}>
+            <Text style={[tableStyles.priceText, { color: T.text }]}>
               {formatPrice(item.oneTenDays)}
             </Text>
           </View>
@@ -230,15 +230,15 @@ export default function FeeStructureScreen() {
           onPress={() => navigation.openDrawer()}
           activeOpacity={0.7}
         >
-          <Text style={styles.menuIcon}>{"\u2630"}</Text>
+          <Text style={[styles.menuIcon, { color: T.text }]}>{"\u2630"}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Fee Structure</Text>
+        <Text style={[styles.headerTitle, { color: T.text }]}>Fee Structure</Text>
       </View>
 
       {loading && !refreshing ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={T.accent} />
-          <Text style={styles.loadingText}>Loading fee structure…</Text>
+          <Text style={[styles.loadingText, { color: T.textMuted }]}>Loading fee structure…</Text>
         </View>
       ) : error ? (
         <View style={styles.center}>
@@ -310,7 +310,7 @@ const tableStyles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+    borderBottomColor: "rgba(128,128,128,0.2)",
   },
   typeCell: {
     flex: 0.9,
@@ -328,7 +328,6 @@ const tableStyles = StyleSheet.create({
   },
   typeText: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.8)",
     fontWeight: "500",
   },
   priceText: {
@@ -355,20 +354,17 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.08)",
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   menuIcon: {
     fontSize: 20,
-    color: "#fff",
   },
   headerTitle: {
     flex: 1,
     fontSize: 18,
     fontWeight: "700",
-    color: "#fff",
   },
   center: {
     flex: 1,
@@ -377,7 +373,6 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   loadingText: {
-    color: "rgba(255,255,255,0.5)",
     fontSize: 14,
     marginTop: 12,
   },

@@ -34,7 +34,7 @@ export default function ClientPaymentHistorySection({
           ]}
         >
           <Text style={styles.emptyIcon}>&#x1F4AD;</Text>
-          <Text style={styles.emptyText}>No payment records found.</Text>
+          <Text style={[styles.emptyText, { color: T.textMuted }]}>No payment records found.</Text>
         </View>
       )}
     </>
@@ -60,6 +60,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: "#666",
   },
 });

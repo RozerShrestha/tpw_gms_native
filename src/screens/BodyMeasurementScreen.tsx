@@ -240,9 +240,9 @@ export default function BodyMeasurementScreen() {
       {/* Header */}
       <View style={[styles.header, { backgroundColor: T.card, borderBottomColor: T.border }]}>
         <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuBtn}>
-          <Text style={styles.menuIcon}>☰</Text>
+          <Text style={[styles.menuIcon, { color: T.text }]}>☰</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Body Measurement</Text>
+        <Text style={[styles.headerTitle, { color: T.text }]}>Body Measurement</Text>
         <View style={styles.menuBtn} />
       </View>
 
@@ -263,8 +263,8 @@ export default function BodyMeasurementScreen() {
         {measurements.length === 0 ? (
           <View style={[styles.emptyCard, { backgroundColor: T.card, borderColor: T.border }]}>
             <Text style={styles.emptyIcon}>📋</Text>
-            <Text style={styles.emptyText}>No measurements recorded yet</Text>
-            <Text style={styles.emptySubtext}>Tap the button above to add your first measurement</Text>
+            <Text style={[styles.emptyText, { color: T.textSecondary }]}>No measurements recorded yet</Text>
+            <Text style={[styles.emptySubtext, { color: T.textMuted }]}>Tap the button above to add your first measurement</Text>
           </View>
         ) : (
           measurements.map((m, index) => (
@@ -307,8 +307,8 @@ export default function BodyMeasurementScreen() {
                     <View key={dl.key} style={styles.gridItem}>
                       <Text style={styles.gridIcon}>{dl.icon}</Text>
                       <View>
-                        <Text style={styles.gridLabel}>{dl.label}</Text>
-                        <Text style={styles.gridValue}>
+                        <Text style={[styles.gridLabel, { color: T.textSecondary }]}>{dl.label}</Text>
+                        <Text style={[styles.gridValue, { color: T.text }]}>
                           {val}{dl.suffix ? ` ${dl.suffix}` : ""}
                         </Text>
                       </View>
@@ -355,12 +355,12 @@ export default function BodyMeasurementScreen() {
                   <View key={field.label} style={styles.fieldRow}>
                     <Text style={styles.fieldIcon}>{field.icon}</Text>
                     <View style={styles.fieldContent}>
-                      <Text style={styles.fieldLabel}>{field.label}</Text>
+                      <Text style={[styles.fieldLabel, { color: T.textSecondary }]}>{field.label}</Text>
                       <View style={styles.inputRow}>
                         <TextInput
-                          style={[styles.input, { borderColor: T.border, backgroundColor: T.bg }]}
+                          style={[styles.input, { borderColor: T.border, backgroundColor: T.bg, color: T.text }]}
                           placeholder={field.placeholder}
-                          placeholderTextColor="#666"
+                          placeholderTextColor={T.textMuted}
                           value={field.value}
                           onChangeText={field.setter}
                           editable={!loading}
@@ -428,12 +428,10 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     fontSize: 24,
-    color: "#fff",
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#fff",
     letterSpacing: 0.5,
   },
   scrollContent: {
@@ -467,13 +465,11 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: "#aaa",
     fontWeight: "600",
     marginBottom: 6,
   },
   emptySubtext: {
     fontSize: 13,
-    color: "#666",
     textAlign: "center",
   },
   measurementCard: {
@@ -488,7 +484,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    borderBottomColor: "rgba(128,128,128,0.2)",
     paddingBottom: 12,
   },
   cardDate: {
@@ -497,7 +493,7 @@ const styles = StyleSheet.create({
   },
   cardId: {
     fontSize: 11,
-    color: "#666",
+    color: "#999",
     marginTop: 2,
   },
   editBtn: {
@@ -527,13 +523,11 @@ const styles = StyleSheet.create({
   },
   gridLabel: {
     fontSize: 11,
-    color: "#888",
     textTransform: "uppercase",
     letterSpacing: 0.3,
   },
   gridValue: {
     fontSize: 14,
-    color: "#fff",
     fontWeight: "600",
   },
   // Modal styles
@@ -560,11 +554,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.08)",
+    borderBottomColor: "rgba(128,128,128,0.2)",
   },
   modalInfoText: {
     fontSize: 12,
-    color: "#888",
+    color: "#999",
   },
   fieldRow: {
     flexDirection: "row",
@@ -582,7 +576,6 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     fontSize: 11,
-    color: "#aaa",
     fontWeight: "600",
     textTransform: "uppercase",
     letterSpacing: 0.5,
@@ -599,11 +592,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,
-    color: "#fff",
   },
   suffix: {
     fontSize: 13,
-    color: "#888",
+    color: "#999",
     marginLeft: 8,
     fontWeight: "600",
   },

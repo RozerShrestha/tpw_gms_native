@@ -31,6 +31,7 @@ import {
   HourlyAttendanceChart,
   TopCheckinsCard,
 } from "../components/dashboard";
+import { useAppTheme } from "../context/AppThemeContext";
 
 // ─── Helpers ──────────────────────────────────────────────────
 /** Normalise dates like "Jun 16 2025 9:02AM" → "Jun 16, 2025 9:02 AM" */
@@ -80,7 +81,7 @@ function getRemainingDays(expireDate: string | null | undefined): number | null 
 
 export default function DashboardScreen() {
   const { accessToken, memberId, role, logout } = useAuth();
-  const { setMemberInfo: setGlobalMemberInfo, setTheme: setGlobalTheme } = useMemberInfo();
+  const { setMemberInfo: setGlobalMemberInfo, setTheme: setGlobalTheme, theme: T } = useMemberInfo();
   const navigation = useNavigation<any>();
   const [memberInfo, setMemberInfo] = useState<MemberLoginInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,12 +98,11 @@ export default function DashboardScreen() {
   const isFemale =
     memberInfo?.gender?.toLowerCase() === "female" ||
     memberInfo?.gender?.toLowerCase() === "f";
-  const T = isFemale ? THEME_FEMALE : THEME_MALE;
 
-  // Keep global theme in sync
+  // Keep global theme in sync with gender
   useEffect(() => {
-    setGlobalTheme(T);
-  }, [T, setGlobalTheme]);
+    setGlobalTheme(isFemale ? THEME_FEMALE : THEME_MALE);
+  }, [isFemale, setGlobalTheme]);
 
   // ─── Remaining days / expired ─────────────────────────────
   const remainingDays = useMemo(
@@ -205,7 +205,7 @@ export default function DashboardScreen() {
     return (
       <View style={[styles.centered, { backgroundColor: T.bg }]}>
         <ActivityIndicator size="large" color={T.accent} />
-        <Text style={styles.loadingText}>Loading your profile...</Text>
+        <Text style={[styles.loadingText, { color: T.textSecondary }]}>Loading your profile...</Text>
       </View>
     );
   }
@@ -223,7 +223,7 @@ export default function DashboardScreen() {
           <Text style={styles.retryText}>TRY AGAIN</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.logoutBtnAlt} onPress={handleLogout}>
-          <Text style={styles.logoutBtnAltText}>Logout</Text>
+          <Text style={[styles.logoutBtnAltText, { color: T.textSecondary }]}>Logout</Text>
         </TouchableOpacity>
       </View>
     );
@@ -300,14 +300,14 @@ export default function DashboardScreen() {
         />
 
         {/* Expired Banner */}
-        {isClient && isExpired && <ExpiredBanner remainingDays={remainingDays!} />}
+        {isClient && isExpired && <ExpiredBanner remainingDays={remainingDays!} theme={T} />}
 
         {/* Expired Banner Locker */}
-        {isClient && isLockerExpired && <ExpiredBannerLocker remainingDays={remainingDaysLocker!} />}
+        {isClient && isLockerExpired && <ExpiredBannerLocker remainingDays={remainingDaysLocker!} theme={T} />}
 
         {/* Freeze Info Banner (client only) */}
         {isClient && isFrozen && (
-          <FreezeInfoBanner freezeInfo={freezeInfo} freezeDate={freezeDate} />
+          <FreezeInfoBanner freezeInfo={freezeInfo} freezeDate={freezeDate} theme={T} />
         )}
 
         {/* Remaining Days Card */}
@@ -416,7 +416,6 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 14,
-    color: "#888",
     letterSpacing: 0.5,
   },
   errorIcon: {
@@ -446,7 +445,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   logoutBtnAltText: {
-    color: "#888",
     fontWeight: "600",
     fontSize: 14,
   },
