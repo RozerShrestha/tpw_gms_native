@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useAppTheme } from "../context/AppThemeContext";
-import { resetPassword } from "../api/auth";
+import { resetPassword, generateOtp, forgetPassword } from "../api/auth";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const LOGO_W = Math.min(SCREEN_W * 0.55, 240);
@@ -79,6 +79,15 @@ export default function LoginScreen() {
   const [resetNewPassword, setResetNewPassword] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
 
+  // Forgot password state
+  const [forgotModalVisible, setForgotModalVisible] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotOtp, setForgotOtp] = useState("");
+  const [forgotNewPassword, setForgotNewPassword] = useState("");
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotOtpSent, setForgotOtpSent] = useState(false);
+
   const handleLogin = async () => {
     const trimmedUser = username.trim();
     if (!trimmedUser || !password) {
@@ -125,6 +134,60 @@ export default function LoginScreen() {
       );
     } finally {
       setResetLoading(false);
+    }
+  };
+
+  const handleGenerateOtp = async () => {
+    const trimmedEmail = forgotEmail.trim();
+    if (!trimmedEmail) {
+      showAlert("Validation", "Please enter your email.");
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      const result = await generateOtp(trimmedEmail);
+      if (result.status === 200) {
+        showAlert("Success", result.message);
+        setForgotOtpSent(true);
+      } else {
+        showAlert("Failed", result.message || "Failed to send OTP. Please try again.");
+      }
+    } catch (err: any) {
+      showAlert("Error", err?.message || "An unexpected error occurred.");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const trimmedEmail = forgotEmail.trim();
+    const trimmedOtp = forgotOtp.trim();
+    if (!trimmedEmail || !trimmedOtp || !forgotNewPassword || !forgotConfirmPassword) {
+      showAlert("Validation", "Please fill in all fields.");
+      return;
+    }
+    if (forgotNewPassword !== forgotConfirmPassword) {
+      showAlert("Validation", "New password and confirm password do not match.");
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      const result = await forgetPassword(trimmedEmail, trimmedOtp, forgotNewPassword, forgotConfirmPassword);
+      if (result.status === 200) {
+        showAlert("Success", result.message || "Password changed successfully.");
+        setForgotModalVisible(false);
+        setForgotEmail("");
+        setForgotOtp("");
+        setForgotNewPassword("");
+        setForgotConfirmPassword("");
+        setForgotOtpSent(false);
+      } else {
+        showAlert("Failed", result.message || "Failed to reset password.");
+      }
+    } catch (err: any) {
+      showAlert("Error", err?.message || "An unexpected error occurred.");
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -230,6 +293,14 @@ export default function LoginScreen() {
           >
             <Text style={[styles.forgotLinkText, { color: C.textSecondary }]}>Reset Password?</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setForgotModalVisible(true)}
+            activeOpacity={0.7}
+            style={styles.forgotLink}
+          >
+            <Text style={[styles.forgotLinkText, { color: ACCENT }]}>Forgot Password?</Text>
+          </TouchableOpacity>
         </View>
 
         {/* ── Reset Password Modal ── */}
@@ -322,6 +393,148 @@ export default function LoginScreen() {
                 <Text style={[styles.cancelBtnText, { color: C.textSecondary }]}>Cancel</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </Modal>
+
+        {/* ── Forgot Password Modal ── */}
+        <Modal
+          visible={forgotModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => {
+            if (!forgotLoading) {
+              setForgotModalVisible(false);
+              setForgotOtpSent(false);
+              setForgotEmail("");
+              setForgotOtp("");
+              setForgotNewPassword("");
+              setForgotConfirmPassword("");
+            }
+          }}
+        >
+          <View style={[styles.modalOverlay, { backgroundColor: C.modalOverlay }]}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} keyboardShouldPersistTaps="handled">
+            <View style={[styles.modalCard, { backgroundColor: C.card, borderColor: C.border }]}>
+              <View style={styles.modalHeader}>
+                <Text style={[styles.modalTitle, { color: C.text }]}>Forgot Password</Text>
+                <Text style={[styles.modalSubtitle, { color: C.textMuted }]}>
+                  {forgotOtpSent ? "Enter the OTP and your new password" : "Enter your email to receive an OTP"}
+                </Text>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, { color: C.textSecondary }]}>EMAIL</Text>
+                <View style={[styles.inputWrapper, { backgroundColor: C.inputBg, borderColor: C.border }]}>
+                  <Text style={styles.inputIcon}>📧</Text>
+                  <TextInput
+                    style={[styles.input, { color: C.text }]}
+                    placeholder="Enter your email"
+                    placeholderTextColor={C.placeholder}
+                    value={forgotEmail}
+                    onChangeText={setForgotEmail}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="email-address"
+                    editable={!forgotLoading && !forgotOtpSent}
+                  />
+                </View>
+              </View>
+
+              {!forgotOtpSent ? (
+                <TouchableOpacity
+                  style={[styles.loginBtn, forgotLoading && styles.loginBtnDisabled]}
+                  onPress={handleGenerateOtp}
+                  disabled={forgotLoading}
+                  activeOpacity={0.8}
+                >
+                  {forgotLoading ? (
+                    <ActivityIndicator color="#fff" size="small" />
+                  ) : (
+                    <Text style={styles.loginBtnText}>GENERATE OTP</Text>
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <>
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.label, { color: C.textSecondary }]}>OTP</Text>
+                    <View style={[styles.inputWrapper, { backgroundColor: C.inputBg, borderColor: C.border }]}>
+                      <Text style={styles.inputIcon}>🔢</Text>
+                      <TextInput
+                        style={[styles.input, { color: C.text }]}
+                        placeholder="Enter OTP"
+                        placeholderTextColor={C.placeholder}
+                        value={forgotOtp}
+                        onChangeText={setForgotOtp}
+                        keyboardType="number-pad"
+                        editable={!forgotLoading}
+                      />
+                    </View>
+                  </View>
+
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.label, { color: C.textSecondary }]}>NEW PASSWORD</Text>
+                    <View style={[styles.inputWrapper, { backgroundColor: C.inputBg, borderColor: C.border }]}>
+                      <Text style={styles.inputIcon}>🔑</Text>
+                      <TextInput
+                        style={[styles.input, { color: C.text }]}
+                        placeholder="Enter new password"
+                        placeholderTextColor={C.placeholder}
+                        value={forgotNewPassword}
+                        onChangeText={setForgotNewPassword}
+                        secureTextEntry
+                        editable={!forgotLoading}
+                      />
+                    </View>
+                  </View>
+
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.label, { color: C.textSecondary }]}>CONFIRM PASSWORD</Text>
+                    <View style={[styles.inputWrapper, { backgroundColor: C.inputBg, borderColor: C.border }]}>
+                      <Text style={styles.inputIcon}>🔑</Text>
+                      <TextInput
+                        style={[styles.input, { color: C.text }]}
+                        placeholder="Confirm new password"
+                        placeholderTextColor={C.placeholder}
+                        value={forgotConfirmPassword}
+                        onChangeText={setForgotConfirmPassword}
+                        secureTextEntry
+                        editable={!forgotLoading}
+                      />
+                    </View>
+                  </View>
+
+                  <TouchableOpacity
+                    style={[styles.loginBtn, forgotLoading && styles.loginBtnDisabled]}
+                    onPress={handleForgotPassword}
+                    disabled={forgotLoading}
+                    activeOpacity={0.8}
+                  >
+                    {forgotLoading ? (
+                      <ActivityIndicator color="#fff" size="small" />
+                    ) : (
+                      <Text style={styles.loginBtnText}>CHANGE PASSWORD</Text>
+                    )}
+                  </TouchableOpacity>
+                </>
+              )}
+
+              <TouchableOpacity
+                onPress={() => {
+                  setForgotModalVisible(false);
+                  setForgotOtpSent(false);
+                  setForgotEmail("");
+                  setForgotOtp("");
+                  setForgotNewPassword("");
+                  setForgotConfirmPassword("");
+                }}
+                activeOpacity={0.7}
+                style={styles.cancelBtn}
+                disabled={forgotLoading}
+              >
+                <Text style={[styles.cancelBtnText, { color: C.textSecondary }]}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+            </ScrollView>
           </View>
         </Modal>
 

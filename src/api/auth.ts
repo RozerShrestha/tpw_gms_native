@@ -62,6 +62,68 @@ export async function resetPassword(
 }
 
 /**
+ * Generate OTP for forgot password flow.
+ * GET api/GenerateOtp?email=...
+ */
+export async function generateOtp(email: string): Promise<{ status: number; message: string }> {
+  const url = `${API_BASE_URL}${ENDPOINTS.GENERATE_OTP}?email=${encodeURIComponent(email)}`;
+  console.log("[GenerateOtp] Calling:", url);
+
+  const response = await fetch(url, { method: "GET" });
+  const text = await response.text();
+  console.log("[GenerateOtp] Raw response:", text);
+
+  try {
+    const data = JSON.parse(text);
+    // Handle wrapped response: { "Message": "{\"status\":...,\"message\":...}" }
+    if (data.Message && !data.status) {
+      try {
+        const inner = JSON.parse(data.Message);
+        return { status: inner.status ?? response.status, message: inner.message || inner.Message || data.Message };
+      } catch {
+        return { status: response.status, message: data.Message };
+      }
+    }
+    return { status: data.status ?? response.status, message: data.message || data.Message || "" };
+  } catch {
+    throw new Error(text || `Request failed with status ${response.status}`);
+  }
+}
+
+/**
+ * Reset password using OTP (forgot password flow).
+ * GET api/ForgetPassword?email=...&otp=...&newPassword=...&confirmPassword=...
+ */
+export async function forgetPassword(
+  email: string,
+  otp: string,
+  newPassword: string,
+  confirmPassword: string
+): Promise<{ status: number; message: string }> {
+  const url = `${API_BASE_URL}${ENDPOINTS.FORGET_PASSWORD}?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}&newPassword=${encodeURIComponent(newPassword)}&confirmPassword=${encodeURIComponent(confirmPassword)}`;
+  console.log("[ForgetPassword] Calling:", url);
+
+  const response = await fetch(url, { method: "GET" });
+  const text = await response.text();
+  console.log("[ForgetPassword] Raw response:", text);
+
+  try {
+    const data = JSON.parse(text);
+    if (data.Message && !data.status) {
+      try {
+        const inner = JSON.parse(data.Message);
+        return { status: inner.status ?? response.status, message: inner.message || inner.Message || data.Message };
+      } catch {
+        return { status: response.status, message: data.Message };
+      }
+    }
+    return { status: data.status ?? response.status, message: data.message || data.Message || "" };
+  } catch {
+    throw new Error(text || `Request failed with status ${response.status}`);
+  }
+}
+
+/**
  * Authenticate with username/password using x-www-form-urlencoded.
  * Returns the parsed TokenResponse on success; throws on failure.
  */
