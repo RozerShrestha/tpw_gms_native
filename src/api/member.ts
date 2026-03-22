@@ -97,13 +97,14 @@ export async function fetchFeeStructure(
 }
 
 /**
- * Fetch top 10 checkins leaderboard.
+ * Fetch top 10 checkins leaderboard with member rank.
  */
 export async function fetchTopTenCheckins(
   accessToken: string,
-  branchName: string
+  branchName: string,
+  memberId: string
 ): Promise<TopCheckinItem[]> {
-  const url = `${API_BASE_URL}${ENDPOINTS.TOP_TEN_CHECKINS}?branchName=${encodeURIComponent(branchName)}`;
+  const url = `${API_BASE_URL}${ENDPOINTS.TOP_TEN_CHECKINS}?branchName=${encodeURIComponent(branchName)}&memberId=${encodeURIComponent(memberId)}`;
 
   const response = await fetch(url, {
     method: "GET",

@@ -14,6 +14,7 @@ import { DashboardTheme } from "./theme";
 import { fetchTopTenCheckins } from "../../api/member";
 import { TopCheckinItem } from "../../types/api";
 import { API_BASE_URL } from "../../api/config";
+import { useMemberInfo } from "../../context/MemberInfoContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CARD_WIDTH = SCREEN_WIDTH * 0.375;
@@ -56,7 +57,9 @@ export default function TopCheckinsCard({
   branch,
   theme: T,
 }: TopCheckinsCardProps) {
+  const { memberInfo } = useMemberInfo();
   const [data, setData] = useState<TopCheckinItem[]>([]);
+  const [memberRank, setMemberRank] = useState<TopCheckinItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -65,14 +68,22 @@ export default function TopCheckinsCard({
     try {
       setLoading(true);
       setError(false);
-      const result = await fetchTopTenCheckins(accessToken, branch);
+      if (!memberInfo?.memberId) {
+        setError(true);
+        return;
+      }
+      const result = await fetchTopTenCheckins(accessToken, branch, memberInfo.memberId);
       setData(result);
+      
+      // Find current user's rank
+      const userRank = result.find(item => item.memberID === memberInfo.memberId);
+      setMemberRank(userRank || null);
     } catch {
       setError(true);
     } finally {
       setLoading(false);
     }
-  }, [accessToken, branch]);
+  }, [accessToken, branch, memberInfo?.memberId]);
 
   useEffect(() => {
     load();
@@ -214,6 +225,28 @@ export default function TopCheckinsCard({
         </Text>
       </View>
 
+      {/* Member Rank Card */}
+      {memberRank && (
+        <View style={[styles.memberRankSection, { borderBottomColor: T.border }]}>
+          <View style={styles.memberRankContent}>
+            <View style={[styles.rankBadge, { backgroundColor: T.accent + "22" }]}>
+              <Text style={styles.rankMedal}>
+                {memberRank.MemberRank === 1 ? '🥇' :
+                 memberRank.MemberRank === 2 ? '🥈' :
+                 memberRank.MemberRank === 3 ? '🥉' : '⭐'}
+              </Text>
+            </View>
+            <View style={styles.rankInfo}>
+              <Text style={[styles.rankLabel, { color: T.textMuted }]}>YOUR RANK</Text>
+              <Text style={[styles.rankValue, { color: T.accent }]}>#{memberRank.MemberRank}</Text>
+              <Text style={[styles.rankCheckins, { color: T.text }]}>
+                {memberRank.TotalCheckins} check-ins
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
+
       {/* Horizontal carousel */}
       <FlatList
         data={data}
@@ -341,6 +374,47 @@ const styles = StyleSheet.create({
   branchText: {
     fontSize: 9,
     textTransform: "capitalize",
+  },
+
+  // ── Member Rank Section ────────────────────────────────────
+  memberRankSection: {
+    borderBottomWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  memberRankContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  rankBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  rankMedal: {
+    fontSize: 32,
+  },
+  rankInfo: {
+    flex: 1,
+  },
+  rankLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  rankValue: {
+    fontSize: 24,
+    fontWeight: "800",
+    marginBottom: 2,
+  },
+  rankCheckins: {
+    fontSize: 13,
+    fontWeight: "500",
   },
 
   // ── Dot indicators ─────────────────────────────────────────
