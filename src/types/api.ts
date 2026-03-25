@@ -90,12 +90,25 @@ export interface HourlyAttendance {
   NumberOfCheckins: number;
 }
 
+/** A single reward point record */
+export interface RewardPoint {
+  Id: number;
+  MemberId: string;
+  ActivityType: string;
+  Points: number;
+  ActivityDate: string;
+  ReferenceId: string | null;
+  Notes: string;
+}
+
 /** A single top-checkin leaderboard record */
 export interface TopCheckinItem {
+  memberID: string;
   fullname: string;
   TotalCheckins: number;
   branch: string;
   imageLoc: string;
+  MemberRank: number;
 }
 
 /** A single fee structure record */

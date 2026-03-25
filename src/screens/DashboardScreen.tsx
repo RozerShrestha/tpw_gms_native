@@ -12,7 +12,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useMemberInfo } from "../context/MemberInfoContext";
 import { fetchMemberLoginInfo } from "../api/member";
-import { fetchQRForStaff } from "../api/member";
+import { fetchQRForStaff, fetchRewardPoints } from "../api/member";
 import { MemberLoginInfo } from "../types/api";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -89,6 +89,7 @@ export default function DashboardScreen() {
   const [error, setError] = useState<string | null>(null);
   const [staffQR, setStaffQR] = useState<string | null>(null);
   const [refreshingQR, setRefreshingQR] = useState(false);
+  const [rewardPoints, setRewardPoints] = useState<number | null>(null);
 
   const isEmployee = role === "employee";
   const isClient = role === "client";
@@ -167,6 +168,16 @@ export default function DashboardScreen() {
             setStaffQR(qr);
           } catch (qrErr: any) {
             console.log("[Dashboard] Staff QR fetch failed:", qrErr?.message);
+          }
+        }
+
+        // Fetch reward points for clients
+        if (role === "client" && data?.memberId) {
+          try {
+            const rp = await fetchRewardPoints(accessToken, data.memberId);
+            setRewardPoints(rp.reduce((sum, item) => sum + item.Points, 0));
+          } catch {
+            setRewardPoints(null);
           }
         }
       } catch (err: any) {
@@ -354,6 +365,8 @@ export default function DashboardScreen() {
           }
           branch={memberInfo?.branch}
           dueAmount={memberInfo?.dueAmount}
+          rewardPoints={isClient ? rewardPoints : undefined}
+          onRewardPress={() => navigation.navigate("RewardPoints")}
           theme={T}
         />
 

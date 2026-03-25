@@ -230,11 +230,18 @@ export default function TopCheckinsCard({
         <View style={[styles.memberRankSection, { borderBottomColor: T.border }]}>
           <View style={styles.memberRankContent}>
             <View style={[styles.rankBadge, { backgroundColor: T.accent + "22" }]}>
-              <Text style={styles.rankMedal}>
-                {memberRank.MemberRank === 1 ? '🥇' :
-                 memberRank.MemberRank === 2 ? '🥈' :
-                 memberRank.MemberRank === 3 ? '🥉' : '⭐'}
-              </Text>
+              {hasRealImage(memberRank.imageLoc) ? (
+                <Image
+                  source={{ uri: getImageUrl(memberRank.imageLoc) }}
+                  style={styles.rankImage}
+                />
+              ) : (
+                <Text style={styles.rankMedal}>
+                  {memberRank.MemberRank === 1 ? '🥇' :
+                   memberRank.MemberRank === 2 ? '🥈' :
+                   memberRank.MemberRank === 3 ? '🥉' : '⭐'}
+                </Text>
+              )}
             </View>
             <View style={styles.rankInfo}>
               <Text style={[styles.rankLabel, { color: T.textMuted }]}>YOUR RANK</Text>
@@ -396,6 +403,12 @@ const styles = StyleSheet.create({
   },
   rankMedal: {
     fontSize: 32,
+  },
+  rankImage: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    resizeMode: "cover",
   },
   rankInfo: {
     flex: 1,

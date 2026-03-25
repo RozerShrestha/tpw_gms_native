@@ -16,5 +16,6 @@ export { default as NavigationCard } from "./NavigationCard";
 export { default as InfoRow } from "./InfoRow";
 export { default as HourlyAttendanceChart } from "./HourlyAttendanceChart";
 export { default as TopCheckinsCard } from "./TopCheckinsCard";
+export { default as RewardPointsCard } from "./RewardPointsCard";
 export { THEME_MALE, THEME_FEMALE } from "./theme";
 export type { DashboardTheme } from "./theme";

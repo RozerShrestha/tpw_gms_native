@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 import { API_BASE_URL, ENDPOINTS } from "./config";
-import { MemberLoginInfo, HourlyAttendance, FeeStructureItem, TopCheckinItem, BodyMeasurement, BranchInfo } from "../types/api";
+import { MemberLoginInfo, HourlyAttendance, FeeStructureItem, TopCheckinItem, BodyMeasurement, BranchInfo, RewardPoint } from "../types/api";
 
 /**
  * Fetch member login info using Bearer token and x-www-form-urlencoded body.
@@ -397,4 +397,27 @@ export async function fetchBranchInformation(
 
   const json = await response.json();
   return json.data ?? [];
+}
+
+export async function fetchRewardPoints(
+  accessToken: string,
+  memberId: string
+): Promise<RewardPoint[]> {
+  const url = `${API_BASE_URL}${ENDPOINTS.REWARD_POINTS}?memberId=${encodeURIComponent(memberId)}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(text || `Failed to fetch reward points (status ${response.status})`);
+  }
+
+  const json = await response.json();
+  if (!json) return [];
+  return Array.isArray(json) ? json : (json.data ?? []);
 }

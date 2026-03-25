@@ -17,4 +17,5 @@ export const ENDPOINTS = {
   GET_BRANCH_INFORMATION: "/api/GetBranchInformation",
   GENERATE_OTP: "/api/GenerateOtp",
   FORGET_PASSWORD: "/api/ForgetPassword",
+  REWARD_POINTS: "/api/GetRewardPoints",
 } as const;

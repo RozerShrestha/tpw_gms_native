@@ -18,6 +18,7 @@ import FeeStructureScreen from "./src/screens/FeeStructureScreen";
 import BodyMeasurementScreen from "./src/screens/BodyMeasurementScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import BranchScreen from "./src/screens/BranchScreen";
+import RewardPointsScreen from "./src/screens/RewardPointsScreen";
 import CustomDrawerContent from "./src/components/dashboard/CustomDrawerContent";
 
 type AuthStackParamList = {
@@ -33,6 +34,7 @@ type DrawerParamList = {
   BodyMeasurement: undefined;
   Profile: undefined;
   Branch: undefined;
+  RewardPoints: undefined;
 };
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
@@ -101,6 +103,7 @@ function DrawerNavigator() {
       <Drawer.Screen name="FeeStructure" component={FeeStructureScreen} />
       <Drawer.Screen name="BodyMeasurement" component={BodyMeasurementScreen} />
       <Drawer.Screen name="Branch" component={BranchScreen} />
+      <Drawer.Screen name="RewardPoints" component={RewardPointsScreen} />
     </Drawer.Navigator>
   );
 }

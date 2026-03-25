@@ -127,10 +127,7 @@ export async function forgetPassword(
  * Authenticate with username/password using x-www-form-urlencoded.
  * Returns the parsed TokenResponse on success; throws on failure.
  */
-export async function loginWithPassword(
-  username: string,
-  password: string
-): Promise<TokenResponse> {
+export async function loginWithPassword(username: string, password: string): Promise<TokenResponse> {
   const params = new URLSearchParams();
   params.append("grant_type", "password");
   params.append("username", username);

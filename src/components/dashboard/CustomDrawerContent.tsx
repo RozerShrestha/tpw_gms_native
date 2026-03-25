@@ -158,6 +158,12 @@ export default function CustomDrawerContent(
       icon: "\u{1F4B3}",
       screen: "PaymentHistory",
     });
+    primaryItems.push({
+      key: "reward-points",
+      label: "Reward Points",
+      icon: "\u{1F3C6}",
+      screen: "RewardPoints",
+    });
   }
 
   if (isGuest) {
